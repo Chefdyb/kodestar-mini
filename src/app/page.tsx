@@ -12,9 +12,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
   const dev = ""; //write you naem here
-  if (dev == "Ato") {
-    router.push("/editor");
-  }
+
   return (
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup
