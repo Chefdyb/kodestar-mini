@@ -62,8 +62,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     return (
         <main className="h-screen flex items-center justify-center bg-slate-50">
-            <section className="overflow-hidden border rounded-md shadow-md px-4 py-5 h-[70vh] flex items-center justify-center gap-2">
-                <div className="h-full rounded-md overflow-hidden">
+            <section className="overflow-hidden border rounded-md   md:h-[70vh] flex items-center justify-center">
+                <div className="h-full hidden md:block  overflow-hidden">
                     <img
                         className="bg-contain  h-full w-full"
                         src="/images/loginImage.png"
@@ -103,7 +103,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                         {error && <p className="text-destructive">{error}</p>}
                     </CardContent>
                     <CardFooter>
-                        <Button
+                        <Button 
                             className="w-full"
                             onClick={handleSubmit}
                             disabled={loading}
