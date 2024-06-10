@@ -1,4 +1,11 @@
 "use client";
+import FileIcon from "@/components/mycomponents/FileIcon";
+import {
+  GlassCard,
+  GlassCardContent,
+} from "@/components/mycomponents/GlassCard";
+import { Button } from "@/components/ui/button";
+import { CaretSortIcon, GitHubLogoIcon, PlusIcon } from "@radix-ui/react-icons";
 import React, { useState } from "react";
 
 function App() {
@@ -47,84 +54,117 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl mb-4">Project Dashboard</h1>
-      <SearchFilter />
-      <ProjectActions onCreateProject={handleCreateProject} />
-      <ProjectList
-        projects={projects}
-        onOpenProject={handleOpenProject}
-        onDuplicateProject={handleDuplicateProject}
-        onDeleteProject={handleDeleteProject}
-      />
-      <CloudSync />
-      <Collaboration />
+    <div className="w-screen h-screen bg-stone-800 flex items-center justify-center flex-col">
+      <div className="flex flex-col max-w-5xl w-full ">
+        <h1 className="text-base mb-4 text-gray-400 font-mono font-extrabold">
+          Project Dashboard
+        </h1>
+        <h1 className="text-3xl mb-4 text-gray-200 font-mono font-extrabold">
+          Welcome, Divine
+        </h1>
+        <div className=" flex  items-start gap-14">
+          <RecentProjects />
+          <div className="flex-1">
+            <ProjectActions />
+            <CloudSync />
+            <Collaboration />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default App;
 
-const ProjectActions = ({ onCreateProject }: any) => {
-  const [newProjectName, setNewProjectName] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  const handleCreateProject = () => {
-    onCreateProject(newProjectName);
-    setShowModal(false);
-  };
-
+const RecentProjects = () => {
   return (
-    <div className="flex justify-between items-center py-4">
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => setShowModal(true)}
-      >
-        Create New Project
-      </button>
-
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-lg">
-            <h2 className="text-xl mb-4">Create New Project</h2>
-            <input
-              type="text"
-              className="border p-2 mb-4 w-full"
-              placeholder="Project Name"
-              value={newProjectName}
-              onChange={(e) => setNewProjectName(e.target.value)}
-            />
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-              onClick={handleCreateProject}
-            >
-              Create
-            </button>
-            <button
-              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded"
-              onClick={() => setShowModal(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+    <div className=" flex flex-col mt-6 max-w-lg w-full">
+      <h2 className="text-lg mb-2 text-gray-400 font-mono font-extrabold">
+        Recent Projects
+      </h2>
+      <GlassCard>
+        <GlassCardContent>
+          <SearchFilter />
+          <ProjectList />
+        </GlassCardContent>
+      </GlassCard>
+    </div>
+  );
+};
+const ProjectActions = ({ onCreateProject }: any) => {
+  return (
+    <div className="pt-14 gap-2 flex items-start justify-between ">
+      <GlassCard className=" flex  aspect-square gap-2 flex-col items-center p-2 cursor-pointer hover:bg-opacity-25">
+        <PlusIcon
+          height={43}
+          width={43}
+          color="gold"
+          className="text-yello-700"
+        />
+        <GlassCardContent className="text-lg text-gray-300 font-bold font-mono text-center">
+          Create <br />
+          New Project
+        </GlassCardContent>
+      </GlassCard>
+      <GlassCard className=" flex  aspect-square gap-2 flex-col items-center p-2 cursor-pointer hover:bg-opacity-25">
+        <PlusIcon
+          height={43}
+          width={43}
+          color="gold"
+          className="text-yello-700"
+        />
+        <GlassCardContent className="text-lg text-gray-300 font-bold font-mono text-center">
+          Create <br />
+          New Project
+        </GlassCardContent>
+      </GlassCard>{" "}
+      <GlassCard className=" flex  aspect-square gap-2 flex-col items-center p-2 cursor-pointer hover:bg-opacity-25">
+        <PlusIcon
+          height={43}
+          width={43}
+          color="gold"
+          className="text-yello-700"
+        />
+        <GlassCardContent className="text-lg text-gray-300 font-bold font-mono text-center">
+          Create <br />
+          New Project
+        </GlassCardContent>
+      </GlassCard>
     </div>
   );
 };
 
 const projects = [
   {
-    name: "Project Alpha",
+    name: "Inheritance - OOP",
     lastModified: "2023-06-09",
-    language: "JavaScript",
-    status: "Open",
+    language: ["css"],
   },
   {
-    name: "Project Beta",
+    name: "Bubble Sort - Data Structures",
     lastModified: "2023-06-08",
-    language: "Python",
-    status: "Requires Attention",
+    language: ["html"],
+  },
+  {
+    name: "Quick Sort - Algorithms",
+    lastModified: "2023-05-15",
+    language: ["py"],
+  },
+  {
+    name: "Hash Tables - Data Structures",
+    lastModified: "2023-04-22",
+    language: ["png"],
+  },
+  {
+    name: "Multithreading - Concurrency",
+    lastModified: "2023-03-18",
+    language: ["js"],
+  },
+  {
+    name: "Dynamic Programming - Algorithms",
+    lastModified: "2023-02-27",
+    language: ["ts"],
   },
 ];
 
@@ -134,115 +174,81 @@ const ProjectList = ({
   onDeleteProject,
 }: any) => {
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white">
-        <thead className="bg-gray-800 text-white">
-          <tr>
-            <th className="py-3 px-4 uppercase font-semibold text-sm">
-              Project Name
-            </th>
-            <th className="py-3 px-4 uppercase font-semibold text-sm">
-              Last Modified
-            </th>
-            <th className="py-3 px-4 uppercase font-semibold text-sm">
-              Language
-            </th>
-            <th className="py-3 px-4 uppercase font-semibold text-sm">
-              Status
-            </th>
-            <th className="py-3 px-4 uppercase font-semibold text-sm">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-700">
-          {projects.map((project, index) => (
-            <tr key={index}>
-              <td className="py-3 px-4">{project.name}</td>
-              <td className="py-3 px-4">{project.lastModified}</td>
-              <td className="py-3 px-4">{project.language}</td>
-              <td className="py-3 px-4">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs ${
-                    project.status === "Open"
-                      ? "bg-green-200 text-green-800"
-                      : project.status === "Requires Attention"
-                      ? "bg-red-200 text-red-800"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {project.status}
-                </span>
-              </td>
-              <td className="py-3 px-4">
-                <button
-                  className="text-blue-500"
-                  onClick={() => onOpenProject(project)}
-                >
-                  Open
-                </button>
-                <button
-                  className="ml-2 text-blue-500"
-                  onClick={() => onDuplicateProject(project)}
-                >
-                  Duplicate
-                </button>
-                <button
-                  className="ml-2 text-red-500"
-                  onClick={() => onDeleteProject(project)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="flex-1">
+      <div className=" space-y-0 mt-2 ">
+        {projects.map((project) => (
+          <div className="p-3 text-gray-400   bg-opacity-20 cursor-pointer flex  gap-3 flex-col border-b border-opacity-20 border-white hover:bg-gray-100 hover:bg-opacity-20">
+            <div className="flex gap-3">
+              <FileIcon extenstion={project.language[0] || ""} size="large" />
+              <h2>{project.name}</h2>
+            </div>
+            <span className="self-end text-[11px] text-stone-500 ">
+              Last accessed: {project.lastModified}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 const CloudSync = () => {
   return (
-    <div className="flex justify-between items-center py-4">
-      <button className="bg-blue-500 text-white px-4 py-2 rounded">
-        Connect to Cloud
-      </button>
-      <span className="text-gray-500">Cloud Sync: Not Connected</span>
+    <div className=" flex flex-col mt-6 max-w-lg w-full">
+      <h2 className="text-lg mb-2 text-gray-400 font-mono font-extrabold">
+        Cloud Sync
+      </h2>
+      <GlassCard>
+        <GlassCardContent className="p-5 flex flex-col gap-4">
+          <p className=" text-gray-300 font-semibold font-mono">
+            Sync your projects with github for a seamless intergration of your
+            workflow
+          </p>
+          <Button className="bg-yellow-800 flex gap-3 font-mono ">
+            <GitHubLogoIcon height={24} width={24} />
+            Connect with github
+          </Button>
+        </GlassCardContent>
+      </GlassCard>
     </div>
   );
 };
 
 const Collaboration = () => {
   return (
-    <div className="py-4">
-      <button className="bg-blue-500 text-white px-4 py-2 rounded">
-        Invite Collaborators
-      </button>
+    <div className=" flex flex-col mt-6 max-w-lg w-full">
+      <h2 className="text-lg mb-2 text-gray-400 font-mono font-extrabold">
+        Collaboration
+      </h2>
+      <GlassCard>
+        <GlassCardContent className="p-5 flex flex-col gap-4">
+          <p className=" text-gray-300 font-semibold font-mono">
+            Invite your friends to collaborate with you
+          </p>
+          <Button className="bg-yellow-800 flex gap-3 font-mono ">
+            <GitHubLogoIcon height={24} width={24} />
+            Connect with github
+          </Button>
+        </GlassCardContent>
+      </GlassCard>
     </div>
   );
 };
 
 const SearchFilter = () => {
   return (
-    <div className="flex justify-between items-center py-4">
+    <div className="flex justify-between items-center py-4 gap-2">
       <input
         type="text"
-        className="border p-2 w-full"
+        className=" p-2 w-full bg-transparent br rounded-full bg-white bg-opacity-10 border border-opacity-10 border-white focus:border-opacity-60 focus:outline-none text-white font-mono font-bold px-5"
         placeholder="Search projects..."
       />
-      <select className="border p-2 ml-4">
-        <option>Filter by Language</option>
-        <option>JavaScript</option>
-        <option>Python</option>
-        <option>Java</option>
-      </select>
-      <select className="border p-2 ml-4">
-        <option>Filter by Status</option>
-        <option>Open</option>
-        <option>Saved</option>
-        <option>Requires Attention</option>
-      </select>
+      <Button
+        variant={"ghost"}
+        className="hover:text-gray-900 text-gray-100 rounded-full aspect-square p-0"
+      >
+        <CaretSortIcon className=" h-6 w-6  " />
+      </Button>
     </div>
   );
 };

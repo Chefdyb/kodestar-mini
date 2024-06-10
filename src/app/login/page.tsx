@@ -1,64 +1,58 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import db from "@/lib/db";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { string } from "zod";
 
-
 export default function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      setError(null);
-      setLoading(true);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-      // Basic client-side validation
-      if (!email || !password) {
-          setError("Email and password are required");
-          toast.error(error);
-          setLoading(false);
-          return;
+    // Basic client-side validation
+    if (!email || !password) {
+      setError("Email and password are required");
+      toast.error(error);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Fetch the user from the database
+      const user = await db.users.get({ email });
+
+      // Check if user exists and password matches
+      if (user && user.password === password) {
+        toast.success("Login successful!");
+        // Redirect or perform any other actions upon successful login
+      } else {
+        toast.error(error);
       }
-
-      try {
-          // Fetch the user from the database
-          const user = await db.users.get({ email });
-
-          // Check if user exists and password matches
-          if (user && user.password === password) {
-              
-              toast.success("Login successful!");
-              // Redirect or perform any other actions upon successful login
-          } else {
-              
-              toast.error(error);
-          }
-      } catch (err) {
-          console.error("Error fetching user:", err);
-          setError(
-              "An error occurred while logging in. Please try again later."
-          );
-      } finally {
-          setLoading(false);
-      }
+    } catch (err) {
+      console.error("Error fetching user:", err);
+      setError("An error occurred while logging in. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
-
 
     return (
         <main className="h-screen flex items-center justify-center bg-slate-50">
