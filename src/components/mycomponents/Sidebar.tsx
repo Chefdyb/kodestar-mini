@@ -10,25 +10,35 @@ export default function Sidebar() {
 
   const loadFile = async () => {
     const selected = await open({
-      directory: true
-    })
+      directory: true,
+    });
 
+    console.log("selected", selected);
     if (!selected) return;
 
-    setProjectName(selected as string)
-    readDirectory(selected + '/').then(files => {
-      console.log(files)
-      setFiles(files)
-    })
-  }
+    setProjectName(selected as string);
+    readDirectory(selected + "/").then((files) => {
+      console.log(files);
+      setFiles(files);
+    });
+  };
 
-  return <aside id="sidebar" className="w-full shrink-0 h-full bg-darken overflow-auto">
-    <div className="sidebar-header flex items-center justify-between p-4 py-2.5">
-      <button className="project-explorer" onClick={loadFile}>File explorer</button>
-      <span className="project-name whitespace-nowrap text-gray-400 text-xs">{projectName}</span>  
-    </div>
-    <div className="code-structure">
-      <NavFiles visible={true} files={files}/>
-    </div>
-  </aside>
+  return (
+    <aside
+      id="sidebar"
+      className="w-full shrink-0 h-full bg-darken overflow-auto"
+    >
+      <div className="sidebar-header flex items-center justify-between p-4 py-2.5">
+        <button className="project-explorer" onClick={loadFile}>
+          File explorer
+        </button>
+        <span className="project-name whitespace-nowrap text-gray-400 text-xs">
+          {projectName}
+        </span>
+      </div>
+      <div className="code-structure">
+        <NavFiles visible={true} files={files} />
+      </div>
+    </aside>
+  );
 }

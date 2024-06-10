@@ -20,7 +20,7 @@ export default function Home() {
       router.push("/login");
       break;
     default:
-      router.push("/home");
+      router.push("/");
       break;
   }
 
@@ -28,10 +28,10 @@ export default function Home() {
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup
         direction="horizontal"
-        className="h-full rounded-lg border"
+        className="h-full rounded-lg border "
       >
-        <ResizablePanel defaultSize={25}>
-          <div className="flex h-full items-center justify-center p-6">
+        <ResizablePanel className="min-w-[400px]" defaultSize={25}>
+          <div className="flex h-full items-center justify-center p-6 ">
             <Sidebar />
           </div>
         </ResizablePanel>
