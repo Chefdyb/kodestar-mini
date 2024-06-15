@@ -13,6 +13,7 @@ export default function Sidebar() {
       directory: true,
     });
 
+    console.log(selected);
     console.log("selected", selected);
     if (!selected) return;
 

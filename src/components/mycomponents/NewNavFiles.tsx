@@ -1,4 +1,4 @@
-"use client";
+import React from "react";
 import { MouseEvent } from "react";
 import { useSource } from "@/context/SourceContext";
 import { IFile } from "@/types";
@@ -9,8 +9,7 @@ interface Props {
   files: IFile[];
   visible: boolean;
 }
-
-export default function NavFiles({ files, visible }: Props) {
+const NewNavFiles = ({ files, visible }: Props) => {
   const { setSelect, selected, addOpenedFile } = useSource();
 
   const onShow = async (
@@ -24,12 +23,13 @@ export default function NavFiles({ files, visible }: Props) {
       addOpenedFile(file.id);
     }
   };
+  console.log("files", files);
 
   return (
     <div className={`source-codes ${visible ? "" : "hidden"}`}>
       {files.map((file) => {
         const isSelected = file.id === selected;
-
+        console.log("the file path", file.path);
         if (file.kind === "directory") {
           return (
             <NavFolderItem active={isSelected} key={file.id} file={file} />
@@ -51,4 +51,6 @@ export default function NavFiles({ files, visible }: Props) {
       })}
     </div>
   );
-}
+};
+
+export default NewNavFiles;

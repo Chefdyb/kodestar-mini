@@ -1,5 +1,6 @@
 "use client";
 import Sidebar from "@/components/mycomponents/Sidebar";
+import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -11,41 +12,26 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
-  const dev: string = "DIVINE"; //write you naem here
-  switch (dev) {
-    case "Ato":
-      router.push("/login");
-      break;
-    case "Edwin":
-      router.push("/login");
-      break;
-    default:
-      router.push("/");
-      break;
-  }
-
   return (
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup
         direction="horizontal"
         className="h-full rounded-lg border "
       >
-        <ResizablePanel className="min-w-[400px]" defaultSize={25}>
-          <div className="flex h-full items-center justify-center p-6 ">
-            <Sidebar />
-          </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={75}>
-          <div className=" ">
-            <Editor
-              height={"100vh"}
-              defaultLanguage="python"
-              language="python"
-              theme="vs-dark"
-            />
-          </div>
-        </ResizablePanel>
+        <Button
+          onClick={() => {
+            router.push("/editor?projectId=Godeys");
+          }}
+        >
+          This is for divine to go a preconfigured project{" "}
+        </Button>
+        <Button
+          onClick={() => {
+            router.push("/home");
+          }}
+        >
+          Go home
+        </Button>
       </ResizablePanelGroup>
     </main>
   );
