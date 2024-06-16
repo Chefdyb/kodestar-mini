@@ -8,9 +8,12 @@ import Sidebar from "./Sidebar";
 import { Editor as MonacoEditor } from "@monaco-editor/react";
 import { useSearchParams } from "next/navigation";
 import NewSidebar from "./NewSidebar";
+import { useSource } from "@/context/NewSourceContext";
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
+  const { editSelectedFile, selectedFileContent } = useSource();
+
   return (
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup
@@ -28,8 +31,12 @@ const Editor = () => {
             <MonacoEditor
               height={"100vh"}
               defaultLanguage="python"
-              language="python"
+              language="js"
               theme="vs-dark"
+              value={selectedFileContent}
+              onChange={(content) => {
+                editSelectedFile(content ? content : "");
+              }}
             />
           </div>
         </ResizablePanel>

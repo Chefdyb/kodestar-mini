@@ -5,6 +5,7 @@ import { appDataDir } from "@tauri-apps/api/path";
 import { readDirectory } from "@/helpers/filesys";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
+import { useSource } from "@/context/NewSourceContext";
 
 const NewSidebar = ({ projectId }: { projectId: string }) => {
   const router = useRouter();
