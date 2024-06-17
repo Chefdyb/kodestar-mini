@@ -13,7 +13,6 @@ interface Props {
 }
 
 export default function NavFiles({ files, visible }: Props) {
-  // const { setSelect, selected, addOpenedFile } = useSource();
   const { selected, setSelect, addToOpenedFiles, openedFiles } = useSource();
 
   const onShow = async (
@@ -31,6 +30,7 @@ export default function NavFiles({ files, visible }: Props) {
         id: file.id,
         initContent: fileContent,
         newContent: fileContent,
+        name: file.name,
       });
     }
   };
@@ -48,6 +48,7 @@ export default function NavFiles({ files, visible }: Props) {
 
         return (
           <div
+            //@ts-ignore
             onClick={(ev) => onShow(ev, file)}
             key={file.id}
             className={`soure-item ${

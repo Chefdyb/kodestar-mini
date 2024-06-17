@@ -1,3 +1,4 @@
+"use client";
 import { nanoid } from "nanoid";
 import { useState } from "react";
 import { readDirectory, writeFile } from "@/helpers/filesys";
