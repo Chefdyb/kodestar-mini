@@ -10,6 +10,7 @@ type OpenedFile = {
   initContent: string;
   newContent: string;
   id: string;
+  name: string;
 };
 
 interface ISourceContext {
@@ -20,6 +21,7 @@ interface ISourceContext {
   selectedFileContent: string;
   selected: string;
   setSelect: (id: string) => void;
+  selectedFile: OpenedFile | null;
 }
 
 const SourceContext = createContext<ISourceContext>({
@@ -30,6 +32,7 @@ const SourceContext = createContext<ISourceContext>({
   addToOpenedFiles: () => {},
   selected: "",
   setSelect: () => {},
+  selectedFile: null,
 });
 
 export const SourceProvider = ({
@@ -62,7 +65,10 @@ export const SourceProvider = ({
     },
     [selected, openedFiles]
   ); // Gets the selected file in the opened files and changes the newContent with the one passed as a parameter
-
+  const selectedFile = useMemo(() => {
+    const selectedFile = openedFiles.find((item) => item.id === selected);
+    return selectedFile ? selectedFile : null;
+  }, [selected, openedFiles]);
   const selectedFileContent = useMemo(() => {
     const selectedFile = openedFiles.find((item) => item.id === selected);
     return selectedFile ? selectedFile.newContent : "";
@@ -72,7 +78,7 @@ export const SourceProvider = ({
     (id: string) => {
       setOpenedFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
       if (selected === id) {
-        setSelected("");
+        setSelected(openedFiles[0]?.id || "");
       }
     },
     [selected]
@@ -88,6 +94,7 @@ export const SourceProvider = ({
         editSelectedFile,
         openedFiles,
         addToOpenedFiles,
+        selectedFile,
       }}
     >
       {children}
