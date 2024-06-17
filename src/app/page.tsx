@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
-  const dev: string = "DIVINE"; //write you naem here
+  const dev: string = "Edwin"; //write you naem here
   switch (dev) {
     case "Ato":
       router.push("/login");
