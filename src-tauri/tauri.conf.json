@@ -11,21 +11,26 @@
     "version": "0.1.0"
   },
   "tauri": {
-    "allowlist": {      
+    "allowlist": {
       "fs": {
         "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
         "copyFile": true,
         "createDir": true,
-        "exists": true,
-        "readDir": true,
-        "readFile": true,
         "removeDir": true,
         "removeFile": true,
         "renameFile": true,
-        "scope": [],        
-        "writeFile": true
+        "exists": true,
+        "scope": ["$APPDATA/databases/user_projects/*/*"]
+      },  
+      "path": {
+        "all": true
+      },
+      "dialog": {
+        "all": true
       }
-      
     },
     "bundle": {
       "active": true,

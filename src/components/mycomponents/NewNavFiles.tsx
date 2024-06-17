@@ -1,20 +1,16 @@
-"use client";
+import React from "react";
 import { MouseEvent } from "react";
-
+import { useSource } from "@/context/SourceContext";
 import { IFile } from "@/types";
 import FileIcon from "./FileIcon";
 import NavFolderItem from "./NavFolderItem";
-import { useSource } from "@/context/NewSourceContext";
-import { readFile } from "@/helpers/filesys";
 
 interface Props {
   files: IFile[];
   visible: boolean;
 }
-
-export default function NavFiles({ files, visible }: Props) {
-  // const { setSelect, selected, addOpenedFile } = useSource();
-  const { selected, setSelect, addToOpenedFiles, openedFiles } = useSource();
+const NewNavFiles = ({ files, visible }: Props) => {
+  const { setSelect, selected, addOpenedFile } = useSource();
 
   const onShow = async (
     ev: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -23,23 +19,17 @@ export default function NavFiles({ files, visible }: Props) {
     ev.stopPropagation();
 
     if (file.kind === "file") {
-      // console.log("file path", file.path);
-      const fileContent = await readFile(file.path);
-      // console.log("FIle content", fileContent);
       setSelect(file.id);
-      addToOpenedFiles({
-        id: file.id,
-        initContent: fileContent,
-        newContent: fileContent,
-      });
+      addOpenedFile(file.id);
     }
   };
+  console.log("files", files);
 
   return (
     <div className={`source-codes ${visible ? "" : "hidden"}`}>
       {files.map((file) => {
         const isSelected = file.id === selected;
-
+        console.log("the file path", file.path);
         if (file.kind === "directory") {
           return (
             <NavFolderItem active={isSelected} key={file.id} file={file} />
@@ -51,7 +41,7 @@ export default function NavFiles({ files, visible }: Props) {
             onClick={(ev) => onShow(ev, file)}
             key={file.id}
             className={`soure-item ${
-              isSelected ? "source-item-active " : ""
+              isSelected ? "source-item-active" : ""
             } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer`}
           >
             <FileIcon name={file.name} />
@@ -61,4 +51,6 @@ export default function NavFiles({ files, visible }: Props) {
       })}
     </div>
   );
-}
+};
+
+export default NewNavFiles;
