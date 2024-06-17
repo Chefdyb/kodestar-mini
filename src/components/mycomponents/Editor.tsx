@@ -1,18 +1,19 @@
+"use";
 import React from "react";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "../ui/resizable";
-import Sidebar from "./Sidebar";
 import { Editor as MonacoEditor } from "@monaco-editor/react";
 import { useSearchParams } from "next/navigation";
 import NewSidebar from "./NewSidebar";
 import { useSource } from "@/context/NewSourceContext";
+import EditorHeader from "./EditorHeader";
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
-  const { editSelectedFile, selectedFileContent } = useSource();
+  const { editSelectedFile, selectedFileContent, selectedFile } = useSource();
 
   return (
     <main className=" h-screen w-full overflow-auto">
@@ -20,7 +21,7 @@ const Editor = () => {
         direction="horizontal"
         className="h-full rounded-lg border "
       >
-        <ResizablePanel className="min-w-[400px] bg-gray-800" defaultSize={25}>
+        <ResizablePanel className="min-w-[400px] bg-darken" defaultSize={25}>
           <div className="flex h-full items-start justify-center p-6 ">
             <NewSidebar projectId={projectId || ""} />
           </div>
@@ -28,16 +29,25 @@ const Editor = () => {
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={75}>
           <div className=" ">
-            <MonacoEditor
-              height={"100vh"}
-              defaultLanguage="python"
-              language="js"
-              theme="vs-dark"
-              value={selectedFileContent}
-              onChange={(content) => {
-                editSelectedFile(content ? content : "");
-              }}
-            />
+            <EditorHeader />
+            {!!selectedFile ? (
+              <MonacoEditor
+                path={selectedFile.id}
+                height={"100vh"}
+                defaultLanguage="python"
+                language="js"
+                theme="vs-dark"
+                // className="bg-red-600"
+
+                value={selectedFileContent}
+                onChange={(content) => {
+                  editSelectedFile(content ? content : "");
+                }}
+                // options={{theme:}}
+              />
+            ) : (
+              <div>No file selected</div>
+            )}
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
