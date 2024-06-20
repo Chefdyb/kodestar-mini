@@ -168,7 +168,7 @@ html {
 
 
 .header-item{
-  @apply  px-1 border w-fit gap-2 h-full text-gray-200 items-center justify-center flex cursor-pointer;
+  @apply  px-1 py-1 w-fit  h-full text-gray-200 items-center justify-center flex cursor-pointer;
   
 }
 
@@ -179,7 +179,7 @@ html {
 }
 
 
-
+/* 
 *{
-  border: 0;
-}
+ @apply border-none
+} */

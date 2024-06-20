@@ -6,6 +6,11 @@ import FileIcon from "./FileIcon";
 import NavFolderItem from "./NavFolderItem";
 import { useSource } from "@/context/NewSourceContext";
 import { readFile } from "@/helpers/filesys";
+import {
+  getIconForFile,
+  getIconForFolder,
+  getIconForOpenFolder,
+} from "vscode-icons-js";
 
 interface Props {
   files: IFile[];
@@ -53,9 +58,9 @@ export default function NavFiles({ files, visible }: Props) {
             key={file.id}
             className={`soure-item ${
               isSelected ? "source-item-active " : ""
-            } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer`}
+            } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer `}
           >
-            <FileIcon name={file.name} />
+            <img src={"/icons/" + getIconForFile(file.name)} className=" h-5" />
             <span>{file.name}</span>
           </div>
         );

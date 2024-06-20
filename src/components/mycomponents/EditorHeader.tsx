@@ -2,41 +2,61 @@
 import { useSource } from "@/context/NewSourceContext";
 import React from "react";
 
-import { FaBowlingBall, FaX } from "react-icons/fa6";
+import {
+  FaBaseball,
+  FaBowlingBall,
+  FaClosedCaptioning,
+  FaX,
+} from "react-icons/fa6";
 import { Button } from "../ui/button";
 import { FileIcon, defaultStyles } from "react-file-icon";
+import { IoClose } from "react-icons/io5";
+import { getIconForFile } from "vscode-icons-js";
 
 const EditorHeader = () => {
-  const { openedFiles, setSelect, closeOpenedFile } = useSource();
+  const { openedFiles, setSelect, closeOpenedFile, selected } = useSource();
   return (
-    <div className="bg-darken h-12 flex overflow-x-auto gap-0">
-      {openedFiles.map((item, index) => {
-        return (
-          <div
-            className="header-item m-0 bg-darken border-0"
-            onClick={() => {
-              setSelect(item.id);
-            }}
-          >
-            <FileIcon extension="docx" {...defaultStyles.docx} />;
-            <div className="">{item.name}</div>
-            <Button
-              className=" aspect-square bg-opacity-35 opacity-0 p-0 h-5 hover:bg-gray-400 hover:text-gray-300"
-              variant={"ghost"}
-              onClick={(e) => {
-                closeOpenedFile(item.id);
-                e.stopPropagation();
+    <div className="bg-darken h-[52px] w-full  overflow-x-auto whitespace-nowrap flex items-start">
+      <div className="inline-flex">
+        {openedFiles.map((item, index) => {
+          return (
+            <div
+              key={item.id}
+              className={`header-item m-0 bg-darken flex flex-col `}
+              onClick={() => {
+                setSelect(item.id);
               }}
             >
-              {item.initContent === item.newContent ? (
-                <FaX />
-              ) : (
-                <FaBowlingBall />
-              )}
-            </Button>
-          </div>
-        );
-      })}
+              <div
+                className={`w-full h-[2px] ${
+                  selected === item.id && "bg-red-400"
+                }`}
+              ></div>
+              <div className="flex items-center gap-3">
+                <div className="h-5 w-5">
+                  <img
+                    src={"/icons/" + getIconForFile(item.name)}
+                    className=" h-5"
+                  />
+                </div>
+                <div className="">{item.name}</div>
+                <div>
+                  <Button
+                    className={` aspect-square bg-opacity-35   hover:bg-gray-400 hover:text-gray-300 relative`}
+                    variant={"ghost"}
+                    onClick={(e) => {
+                      closeOpenedFile(item.id);
+                      e.stopPropagation();
+                    }}
+                  >
+                    <IoClose size={26} className="1 " />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -1,10 +1,11 @@
 "use client";
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { readDirectory, writeFile } from "@/helpers/filesys";
 import { saveFileObject } from "@/stores/file";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
+import { getIconForFolder, getIconForOpenFolder } from "vscode-icons-js";
 
 interface Props {
   file: IFile;
@@ -61,7 +62,11 @@ export default function NavFolderItem({ file, active }: Props) {
       setFilename("");
     });
   };
-
+  const iconName = useMemo(() => {
+    return unfold
+      ? getIconForOpenFolder(file.name)
+      : getIconForFolder(file.name);
+  }, [unfold]);
   return (
     <div className="soure-item">
       <div
@@ -69,7 +74,8 @@ export default function NavFolderItem({ file, active }: Props) {
           active ? "bg-gray-200" : ""
         } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer`}
       >
-        <i className="ri-folder-fill text-yellow-500"></i>
+        <img src={"/icons/" + iconName} className=" h-5" />
+
         <div className="source-header flex items-center justify-between w-full group">
           <span onClick={onShow}>{file.name}</span>
           <i
