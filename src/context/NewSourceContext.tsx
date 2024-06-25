@@ -25,13 +25,13 @@ interface ISourceContext {
 }
 
 const SourceContext = createContext<ISourceContext>({
-  closeOpenedFile: () => {},
-  selectedFileContent: "",
-  openedFiles: [],
-  editSelectedFile: () => {},
-  addToOpenedFiles: () => {},
-  selected: "",
-  setSelect: () => {},
+  closeOpenedFile: () => {}, //close opened file
+  selectedFileContent: "", //selected file content
+  openedFiles: [], //
+  selected: "", // holds selected file id
+  editSelectedFile: () => {}, //
+  addToOpenedFiles: () => {}, //
+  setSelect: () => {}, //
   selectedFile: null,
 });
 
@@ -65,10 +65,12 @@ export const SourceProvider = ({
     },
     [selected, openedFiles]
   ); // Gets the selected file in the opened files and changes the newContent with the one passed as a parameter
+
   const selectedFile = useMemo(() => {
     const selectedFile = openedFiles.find((item) => item.id === selected);
     return selectedFile ? selectedFile : null;
   }, [selected, openedFiles]);
+
   const selectedFileContent = useMemo(() => {
     const selectedFile = openedFiles.find((item) => item.id === selected);
     return selectedFile ? selectedFile.newContent : "";
@@ -78,7 +80,7 @@ export const SourceProvider = ({
     (id: string) => {
       setOpenedFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
       if (selected === id) {
-        setSelected(openedFiles[0]?.id || "");
+        setSelected(openedFiles[-1]?.id || ""); //!CHECK THIS LATER
       }
     },
     [selected]

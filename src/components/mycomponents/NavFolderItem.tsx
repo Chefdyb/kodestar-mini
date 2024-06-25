@@ -67,6 +67,7 @@ export default function NavFolderItem({ file, active }: Props) {
       ? getIconForOpenFolder(file.name)
       : getIconForFolder(file.name);
   }, [unfold]);
+
   return (
     <div className="soure-item">
       <div

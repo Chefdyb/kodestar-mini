@@ -1,5 +1,5 @@
-import { useRef } from "react"
-import { convertFileSrc } from "@tauri-apps/api/tauri"
+import { useRef } from "react";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 interface Props {
   path: string;
@@ -7,10 +7,12 @@ interface Props {
 }
 
 export default function PreviewImage({ path, active }: Props) {
-  const imgRef = useRef<HTMLImageElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null);
 
-  return <div className={`${active ? '' : 'hidden'} p-8`}>
-    <img ref={imgRef} src={convertFileSrc(path)} alt="" />
-  </div>
+  return (
+    <div className={`${active ? "" : "hidden"} p-8`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={imgRef} src={convertFileSrc(path)} alt="" />
+    </div>
+  );
 }
-

@@ -1,11 +1,11 @@
-"use";
+"use client";
 import React from "react";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "../ui/resizable";
-import { Editor as MonacoEditor } from "@monaco-editor/react";
+import { Monaco, Editor as MonacoEditor } from "@monaco-editor/react";
 import { useSearchParams } from "next/navigation";
 import NewSidebar from "./NewSidebar";
 import { useSource } from "@/context/NewSourceContext";
@@ -34,8 +34,16 @@ const Editor = () => {
               <MonacoEditor
                 path={selectedFile.id}
                 height={"100vh"}
+                onMount={(editor, monaco) => {
+                  editor.addCommand(
+                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+                    () => {
+                      console.log("save");
+                    }
+                  );
+                }}
                 defaultLanguage="python"
-                language="js"
+                language={selectedFile.name.split(".").pop()}
                 theme="vs-dark"
                 // className="bg-red-600"
 
