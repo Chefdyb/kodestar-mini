@@ -1,5 +1,11 @@
 "use client";
-import React from "react";
+import React, {
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -10,10 +16,82 @@ import { useSearchParams } from "next/navigation";
 import NewSidebar from "./NewSidebar";
 import { useSource } from "@/context/NewSourceContext";
 import EditorHeader from "./EditorHeader";
+import { getFileObject } from "@/stores/file";
+import { useHotkeys } from "react-hotkeys-hook";
+import { writeFile } from "@/helpers/filesys";
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
-  const { editSelectedFile, selectedFileContent, selectedFile } = useSource();
+  const {
+    editSelectedFile,
+    selectedFileContent,
+    selectedFile,
+    selected,
+    openedFiles,
+  } = useSource();
+
+  const ext = useMemo(() => {
+    const ext = selectedFile?.name.split(".").pop() || "js";
+    const language = {
+      js: "Javascript",
+      py: "Python",
+      ts: "Typescript",
+      css: "CSS",
+      html: "HTML",
+      json: "JSON",
+      md: "Markdown",
+      xml: "XML",
+      sql: "SQL",
+      sh: "Shell",
+      yaml: "YAML",
+      yml: "YAML",
+      toml: "TOML",
+      php: "PHP",
+      go: "Go",
+      java: "Java",
+      rb: "Ruby",
+      rs: "Rust",
+      c: "C",
+      cpp: "C++",
+      cs: "C#",
+      swift: "Swift",
+      kt: "Kotlin",
+      scala: "Scala",
+      perl: "Perl",
+      pl: "Perl",
+      lua: "Lua",
+      r: "R",
+      dart: "Dart",
+      elixir: "Elixir",
+      ex: "Elixir",
+      erl: "Erlang",
+      hs: "Haskell",
+      scss: "SCSS",
+      sass: "SASS",
+      less: "LESS",
+      styl: "Stylus",
+      vue: "Vue",
+      tsx: "TSX",
+      jsx: "JSX",
+      graphql: "GraphQL",
+    } as Record<string, string>;
+    return language[ext]?.toLowerCase() || "javascript";
+  }, [selectedFile, selectedFileContent]);
+
+  const [sselectedFileContent, changeSelectedFilecContent] = useState("");
+  useHotkeys("ctrl+s", () => console.log("hotkeys"), {
+    enableOnFormTags: true,
+  });
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    console.log(openedFiles);
+  }, [openedFiles]);
+
+  const onSave = () => {
+    const file = getFileObject(selected);
+    writeFile(file.path, selectedFileContent);
+  };
 
   return (
     <main className=" h-screen w-full overflow-auto">
@@ -29,21 +107,28 @@ const Editor = () => {
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={75}>
           <div className=" ">
+            <button className="hidden" onClick={onSave} ref={btnRef}>
+              save
+            </button>
             <EditorHeader />
             {!!selectedFile ? (
               <MonacoEditor
                 path={selectedFile.id}
                 height={"100vh"}
                 onMount={(editor, monaco) => {
-                  editor.addCommand(
-                    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
-                    () => {
-                      console.log("save");
-                    }
-                  );
+                  editor.addAction({
+                    id: "save",
+                    label: "Save",
+                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+                    run() {
+                      btnRef.current?.click();
+                    },
+                  });
                 }}
                 defaultLanguage="python"
-                language={selectedFile.name.split(".").pop()}
+                // key={selectedFile.id}
+                saveViewState
+                language={ext}
                 theme="vs-dark"
                 // className="bg-red-600"
 
@@ -51,7 +136,7 @@ const Editor = () => {
                 onChange={(content) => {
                   editSelectedFile(content ? content : "");
                 }}
-                // options={{theme:}}
+                options={{ codeLens: true, autoClosingBrackets: "always" }}
               />
             ) : (
               <div>No file selected</div>
