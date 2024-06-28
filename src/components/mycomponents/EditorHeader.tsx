@@ -40,16 +40,16 @@ const EditorHeader = () => {
                   />
                 </div>
                 <div className="">{item.name}</div>
-                <div>
+                <div >
                   <Button
-                    className={` aspect-square bg-opacity-35   hover:bg-gray-400 hover:text-gray-300 relative`}
+                    className={`  aspect-square bg-opacity-35   hover:bg-gray-400 hover:text-gray-300 relative`}
                     variant={"ghost"}
                     onClick={(e) => {
                       closeOpenedFile(item.id);
                       e.stopPropagation();
                     }}
                   >
-                    <IoClose size={26} className="1 " />
+                    <IoClose size={18} className=" " />
                   </Button>
                 </div>
               </div>

@@ -89,12 +89,12 @@ pub fn create_directory(path: &str) -> Result<()> {
 
 pub fn remove_file(path: &str) -> Result<()> {
     let file_path = Path::new(path);
-    fs::remove_file(file_path);
+    let _ = fs::remove_file(file_path);
     Ok(())
 }
 
 pub fn remove_folder(path: &str) -> Result<()> {
     let folder_path = Path::new(path);
-    fs::remove_dir_all(folder_path);
+    let _  = fs::remove_dir_all(folder_path);
     Ok(())
 }

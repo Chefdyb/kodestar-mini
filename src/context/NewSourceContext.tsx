@@ -27,7 +27,7 @@ interface ISourceContext {
 const SourceContext = createContext<ISourceContext>({
   closeOpenedFile: () => {}, //close opened file
   selectedFileContent: "", //selected file content
-  openedFiles: [], //
+  openedFiles: [], // 
   selected: "", // holds selected file id
   editSelectedFile: () => {}, //
   addToOpenedFiles: () => {}, //
