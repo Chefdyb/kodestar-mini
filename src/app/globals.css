@@ -166,18 +166,7 @@ html {
     background: #555;
 }
 
-.header-item {
-    @apply px-1 py-1 w-fit  h-full text-gray-200 items-center justify-center flex cursor-pointer;
-}
 
-.header-item:hover > button {
-    @apply opacity-50;
-}
-
-/*
-*{
- @apply border-none
-} */
 
 * {
     @apply select-none;

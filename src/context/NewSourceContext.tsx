@@ -4,6 +4,7 @@ import {
   useState,
   useCallback,
   useMemo,
+  useEffect,
 } from "react";
 
 type OpenedFile = {
@@ -55,36 +56,52 @@ export const SourceProvider = ({
     [openedFiles]
   ); // Adds file to the opened files in the editor
 
+  //write the logic well
   const editSelectedFile = useCallback(
     (newContent: string) => {
       setOpenedFiles((prevFiles) =>
         prevFiles.map((file) =>
-          file.id === selected ? { ...file, newContent } : file
+          // file.id === selected ? { ...file, newContent: newContent } : file
+          {
+            if (file.id === selected) {
+              // console.log("from editselectfikle", file);
+              return { ...file, newContent: newContent };
+            }
+            return file;
+          }
         )
       );
     },
     [selected, openedFiles]
   ); // Gets the selected file in the opened files and changes the newContent with the one passed as a parameter
 
-  const selectedFile = useMemo(() => {
-    const selectedFile = openedFiles.find((item) => item.id === selected);
-    return selectedFile ? selectedFile : null;
-  }, [selected, openedFiles]);
-
   const selectedFileContent = useMemo(() => {
     const selectedFile = openedFiles.find((item) => item.id === selected);
     return selectedFile ? selectedFile.newContent : "";
   }, [selected, openedFiles]); // Retrieves the content of the selected file
 
+  const selectedFile = useMemo(() => {
+    const file = openedFiles.find((item) => item.id === selected);
+    return file ? file : null;
+  }, [selected, openedFiles, selectedFileContent]);
+
   const closeOpenedFile = useCallback(
     (id: string) => {
-      setOpenedFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
       if (selected === id) {
-        setSelected(openedFiles[-1]?.id || ""); //!CHECK THIS LATER
+        console.log("openedFile", openedFiles[openedFiles.length - 2].id);
+
+        setSelected(openedFiles[openedFiles.length - 2]?.id || ""); //
       }
+      setOpenedFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
     },
     [selected]
   ); // Removes a file from the opened files and clears the selection if it was the selected file
+
+  useEffect(() => {
+    if (selected === "") {
+      setSelected(openedFiles[openedFiles.length - 2]?.id || "");
+    }
+  }, [selected]);
 
   return (
     <SourceContext.Provider
