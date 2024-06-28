@@ -87,22 +87,22 @@ export const SourceProvider = ({
 
   const closeOpenedFile = useCallback(
     (id: string) => {
-      if (selected === id) {
-        console.log("openedFile", openedFiles[openedFiles.length - 2].id);
+      setOpenedFiles((prevFiles) => {
+        const newFiles = prevFiles.filter((file) => file.id !== id);
 
-        setSelected(openedFiles[openedFiles.length - 2]?.id || ""); //
-      }
-      setOpenedFiles((prevFiles) => prevFiles.filter((file) => file.id !== id));
+        if (selected === id) {
+          if (newFiles.length === 0) {
+            setSelected("");
+          } else {
+            setSelected(newFiles[newFiles.length - 1].id);
+          }
+        }
+
+        return newFiles;
+      });
     },
     [selected]
-  ); // Removes a file from the opened files and clears the selection if it was the selected file
-
-  useEffect(() => {
-    if (selected === "") {
-      setSelected(openedFiles[openedFiles.length - 2]?.id || "");
-    }
-  }, [selected]);
-
+  );
   return (
     <SourceContext.Provider
       value={{

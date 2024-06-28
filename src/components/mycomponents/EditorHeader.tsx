@@ -1,6 +1,6 @@
 "use client";
 import { useSource } from "@/context/NewSourceContext";
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
   FaBaseball,
@@ -16,6 +16,10 @@ import { FaCircle } from "react-icons/fa";
 
 const EditorHeader = () => {
   const { openedFiles, setSelect, closeOpenedFile, selected } = useSource();
+  useEffect(() => {
+    console.log("selected changed: ", selected);
+  }, [selected]);
+
   return (
     <div className="bg-darken h-[46px] w-full  overflow-x-auto whitespace-nowrap flex items-start">
       <div className="inline-flex">
