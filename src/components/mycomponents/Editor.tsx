@@ -7,9 +7,9 @@ import React, {
   useState,
 } from "react";
 import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from "../ui/resizable";
 import { Monaco, Editor as MonacoEditor } from "@monaco-editor/react";
 import { useSearchParams } from "next/navigation";
@@ -28,6 +28,7 @@ const Editor = () => {
     selectedFile,
     selected,
     openedFiles,
+    onSave,
   } = useSource();
 
   const ext = useMemo(() => {
@@ -78,20 +79,10 @@ const Editor = () => {
     return language[ext]?.toLowerCase() || "javascript";
   }, [selectedFile, selectedFileContent]);
 
-  const [sselectedFileContent, changeSelectedFilecContent] = useState("");
-  useHotkeys("ctrl+s", () => console.log("hotkeys"), {
-    enableOnFormTags: true,
-  });
+  // useHotkeys("ctrl+s", () => console.log("hotkeys"), {
+  //   enableOnFormTags: true,
+  // });
   const btnRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    console.log(openedFiles);
-  }, [openedFiles]);
-
-  const onSave = () => {
-    const file = getFileObject(selected);
-    writeFile(file.path, selectedFileContent);
-  };
 
   return (
     <main className=" h-screen w-full overflow-auto">

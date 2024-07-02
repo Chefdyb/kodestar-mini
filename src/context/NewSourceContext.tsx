@@ -1,3 +1,5 @@
+import { writeFile } from "@/helpers/filesys";
+import { getFileObject } from "@/stores/file";
 import {
   createContext,
   useContext,
@@ -23,17 +25,19 @@ interface ISourceContext {
   selected: string;
   setSelect: (id: string) => void;
   selectedFile: OpenedFile | null;
+  onSave: () => void;
 }
 
 const SourceContext = createContext<ISourceContext>({
   closeOpenedFile: () => {}, //close opened file
   selectedFileContent: "", //selected file content
-  openedFiles: [], // 
+  openedFiles: [], //
   selected: "", // holds selected file id
   editSelectedFile: () => {}, //
   addToOpenedFiles: () => {}, //
   setSelect: () => {}, //
   selectedFile: null,
+  onSave: () => {},
 });
 
 export const SourceProvider = ({
@@ -60,16 +64,12 @@ export const SourceProvider = ({
   const editSelectedFile = useCallback(
     (newContent: string) => {
       setOpenedFiles((prevFiles) =>
-        prevFiles.map((file) =>
-          // file.id === selected ? { ...file, newContent: newContent } : file
-          {
-            if (file.id === selected) {
-              // console.log("from editselectfikle", file);
-              return { ...file, newContent: newContent };
-            }
-            return file;
+        prevFiles.map((file) => {
+          if (file.id === selected) {
+            return { ...file, newContent: newContent };
           }
-        )
+          return file;
+        })
       );
     },
     [selected, openedFiles]
@@ -103,6 +103,19 @@ export const SourceProvider = ({
     },
     [selected]
   );
+  const onSave = () => {
+    const file = getFileObject(selected);
+    writeFile(file.path, selectedFileContent);
+    setOpenedFiles((prevFiles) =>
+      prevFiles.map((file) => {
+        if (file.id === selected) {
+          return { ...file, initContent: file.newContent };
+        }
+        return file;
+      })
+    );
+  };
+
   return (
     <SourceContext.Provider
       value={{
@@ -114,6 +127,7 @@ export const SourceProvider = ({
         openedFiles,
         addToOpenedFiles,
         selectedFile,
+        onSave,
       }}
     >
       {children}
