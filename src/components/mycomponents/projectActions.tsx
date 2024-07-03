@@ -103,7 +103,7 @@ const SOmeg = ({ handleCreateProject }: { handleCreateProject: Function }) => {
         </div>
         <div className="flex flex-col gap-4">
           <Label htmlFor="username" className="">
-            Projects' primary language
+            Projects &apos; primary language
           </Label>
           <Select
             required

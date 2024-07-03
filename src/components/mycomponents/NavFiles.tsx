@@ -75,37 +75,38 @@ export default function NavFiles({ files, visible }: Props) {
         }
 
         return (
-          <AlertDialog>
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div
-                  //@ts-ignore
-                  key={file.id}
-                  className={`soure-item ${
-                    isSelected ? "source-item-active " : ""
-                  } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer `}
-                  onClick={(ev) => onShow(ev, file)}
-                >
-                  <img
-                    src={"/icons/" + getIconForFile(file.name)}
-                    className=" h-5"
-                  />
-                  <span>{file.name}</span>
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent>
-                <ContextMenuItem>Edit</ContextMenuItem>
-                <ContextMenuItem>Rename</ContextMenuItem>
-                <ContextMenuItem
-                  className="hover:bg-red-100 text-red-800"
-                  onClick={() => setDeleteDetails(file)}
-                >
-                  <AlertDialogTrigger>Delete</AlertDialogTrigger>
-                </ContextMenuItem>
-              </ContextMenuContent>
-              <DeleteModal fileToBeDeleted={deleteDetails} />
-            </ContextMenu>
-          </AlertDialog>
+            <AlertDialog key={file.id}>
+                <ContextMenu>
+                    <ContextMenuTrigger>
+                        <div
+                            //@ts-ignore
+                            key={file.id}
+                            className={`soure-item ${
+                                isSelected ? "source-item-active " : ""
+                            } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer `}
+                            //@ts-ignore
+                            onClick={(ev) => onShow(ev, file)}
+                        >
+                            <img
+                                src={"/icons/" + getIconForFile(file.name)}
+                                className=" h-5"
+                            />
+                            <span>{file.name}</span>
+                        </div>
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                        <ContextMenuItem>Edit</ContextMenuItem>
+                        <ContextMenuItem>Rename</ContextMenuItem>
+                        <ContextMenuItem
+                            className="hover:bg-red-100 text-red-800"
+                            onClick={() => setDeleteDetails(file)}
+                        >
+                            <AlertDialogTrigger>Delete</AlertDialogTrigger>
+                        </ContextMenuItem>
+                    </ContextMenuContent>
+                    <DeleteModal fileToBeDeleted={deleteDetails} />
+                </ContextMenu>
+            </AlertDialog>
         );
       })}
     </div>

@@ -70,11 +70,11 @@ export default function LoginForm() {
         <main className="h-screen flex items-center justify-center bg-slate-50">
             <section className="overflow-hidden border rounded-md   md:h-[70vh] flex items-center justify-center">
                 <div className="h-full hidden md:block  overflow-hidden">
-                    <Lottie className="w-full h-full"
+                    <Lottie
+                        className="w-full h-full"
                         loop
                         animationData={Animation}
                         play
-                        
                     />
                 </div>
                 <Card className="w-full border-none shadow-none rounded-none h-full grid place-content-center max-w-sm">
@@ -112,6 +112,7 @@ export default function LoginForm() {
                     <CardFooter>
                         <Button
                             className="w-full"
+                            //@ts-ignore
                             onClick={handleSubmit}
                             disabled={loading}
                         >
