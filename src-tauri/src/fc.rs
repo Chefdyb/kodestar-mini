@@ -95,6 +95,6 @@ pub fn remove_file(path: &str) -> Result<()> {
 
 pub fn remove_folder(path: &str) -> Result<()> {
     let folder_path = Path::new(path);
-    let _  = fs::remove_dir_all(folder_path);
+    let _ = fs::remove_dir_all(folder_path);
     Ok(())
 }
