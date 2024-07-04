@@ -5,7 +5,7 @@ import { IFile } from "@/types";
 import FileIcon from "./FileIcon";
 import NavFolderItem from "./NavFolderItem";
 import { useSource } from "@/context/NewSourceContext";
-import { readFile } from "@/helpers/filesys";
+import { deleteFile, readFile } from "@/helpers/filesys";
 import {
   getIconForFile,
   getIconForFolder,
@@ -33,14 +33,17 @@ import {
 interface Props {
   files: IFile[];
   visible: boolean;
+  removeFile: (id: string) => void;
 }
 
-export default function NavFiles({ files, visible }: Props) {
-  const { selected, setSelect, addToOpenedFiles, openedFiles } = useSource();
+export default function NavFiles({
+  files,
+  visible,
 
-  const [state, setState] = useState<"initial" | "renaming" | "deleting">(
-    "initial"
-  );
+  removeFile,
+}: Props) {
+  const { selected, setSelect, addToOpenedFiles } = useSource();
+
   const [deleteDetails, setDeleteDetails] = useState<IFile | null>(null);
 
   const onShow = async (
@@ -75,38 +78,44 @@ export default function NavFiles({ files, visible }: Props) {
         }
 
         return (
-            <AlertDialog key={file.id}>
-                <ContextMenu>
-                    <ContextMenuTrigger>
-                        <div
-                            //@ts-ignore
-                            key={file.id}
-                            className={`soure-item ${
-                                isSelected ? "source-item-active " : ""
-                            } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer `}
-                            //@ts-ignore
-                            onClick={(ev) => onShow(ev, file)}
-                        >
-                            <img
-                                src={"/icons/" + getIconForFile(file.name)}
-                                className=" h-5"
-                            />
-                            <span>{file.name}</span>
-                        </div>
-                    </ContextMenuTrigger>
-                    <ContextMenuContent>
-                        <ContextMenuItem>Edit</ContextMenuItem>
-                        <ContextMenuItem>Rename</ContextMenuItem>
-                        <ContextMenuItem
-                            className="hover:bg-red-100 text-red-800"
-                            onClick={() => setDeleteDetails(file)}
-                        >
-                            <AlertDialogTrigger>Delete</AlertDialogTrigger>
-                        </ContextMenuItem>
-                    </ContextMenuContent>
-                    <DeleteModal fileToBeDeleted={deleteDetails} />
-                </ContextMenu>
-            </AlertDialog>
+          <AlertDialog key={file.id}>
+            <ContextMenu modal={false}>
+              <ContextMenuTrigger>
+                <div
+                  //@ts-ignore
+                  key={file.id}
+                  className={`soure-item ${
+                    isSelected ? "source-item-active " : ""
+                  } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer `}
+                  //@ts-ignore
+                  onClick={(ev) => onShow(ev, file)}
+                >
+                  <img
+                    src={"/icons/" + getIconForFile(file.name)}
+                    className=" h-5"
+                  />
+                  <span>{file.name}</span>
+                </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem>Edit</ContextMenuItem>
+                <ContextMenuItem>Rename</ContextMenuItem>
+                <ContextMenuItem
+                  className="hover:bg-red-100 text-red-800"
+                  onClick={() => setDeleteDetails(file)}
+                >
+                  <AlertDialogTrigger className="w-full text-left">
+                    Delete
+                  </AlertDialogTrigger>
+                </ContextMenuItem>
+              </ContextMenuContent>
+              <DeleteModal
+                fileToBeDeleted={deleteDetails}
+                files={files}
+                removeFile={removeFile}
+              />
+            </ContextMenu>
+          </AlertDialog>
         );
       })}
     </div>
@@ -115,10 +124,17 @@ export default function NavFiles({ files, visible }: Props) {
 
 const DeleteModal = ({
   fileToBeDeleted,
+  files,
+  removeFile,
 }: {
   fileToBeDeleted: IFile | null;
+  files: IFile[];
+  removeFile: (id: string) => void;
 }) => {
+  const { closeOpenedFile } = useSource();
+  const [loading, setLoading] = useState(false);
   if (!fileToBeDeleted) return null;
+
   return (
     <AlertDialogContent>
       <AlertDialogHeader>
@@ -133,7 +149,20 @@ const DeleteModal = ({
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction>Continue</AlertDialogAction>
+        <AlertDialogAction
+          onClick={async () => {
+            if (!fileToBeDeleted) return;
+            setLoading(true);
+            console.log(files, fileToBeDeleted);
+            await deleteFile(fileToBeDeleted.path);
+            removeFile(fileToBeDeleted.id);
+            setLoading(false);
+            // loadProject();
+            closeOpenedFile(fileToBeDeleted.id);
+          }}
+        >
+          Delete
+        </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   );

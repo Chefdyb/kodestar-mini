@@ -6,6 +6,7 @@ import { saveFileObject } from "@/stores/file";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
 import { getIconForFolder, getIconForOpenFolder } from "vscode-icons-js";
+import { PlusIcon } from "@radix-ui/react-icons";
 
 interface Props {
   file: IFile;
@@ -68,10 +69,13 @@ export default function NavFolderItem({ file, active }: Props) {
       : getIconForFolder(file.name);
   }, [unfold]);
 
+  const removeFile = (id: string) => {
+    setFiles((prev) => prev.filter((file) => file.id !== id));
+  };
   return (
     <div className="soure-item">
       <div
-        className={`source-folder ${
+        className={`source-folder group ${
           active ? "bg-gray-200" : ""
         } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer`}
       >
@@ -83,6 +87,10 @@ export default function NavFolderItem({ file, active }: Props) {
             onClick={() => setNewFile(true)}
             className="ri-add-line invisible group-hover:visible"
           ></i>
+          <PlusIcon
+            className="invisible group-hover:visible"
+            onClick={() => setNewFile(true)}
+          />
         </div>
       </div>
 
@@ -99,7 +107,7 @@ export default function NavFolderItem({ file, active }: Props) {
         </div>
       ) : null}
 
-      <NavFiles visible={unfold} files={files} />
+      <NavFiles visible={unfold} files={files} removeFile={removeFile} />
     </div>
   );
 }

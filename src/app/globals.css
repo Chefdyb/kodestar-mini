@@ -69,6 +69,7 @@
 @layer base {
     * {
         @apply border-border;
+        @apply select-none
     }
     body {
         @apply bg-background text-foreground;
@@ -80,7 +81,7 @@
 @tailwind utilities;
 
 html {
-    @apply bg-primary w-screen h-screen;
+    @apply bg-primary w-screen h-screen select-none;
 }
 
 .bg-darken {
@@ -166,8 +167,3 @@ html {
     background: #555;
 }
 
-
-
-* {
-    @apply select-none;
-}
