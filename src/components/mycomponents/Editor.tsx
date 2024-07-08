@@ -84,6 +84,19 @@ const Editor = () => {
   // });
   const btnRef = useRef<HTMLButtonElement>(null);
 
+  /*
+  
+  
+  terminal states and hanlders
+  
+  
+  
+  */
+  const [showTerminal, setShowTerminal] = useState(false);
+  const toggleTerminal = () => {
+    setShowTerminal((init) => !init);
+  };
+
   return (
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup
@@ -97,7 +110,7 @@ const Editor = () => {
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={75}>
-          <div className=" ">
+          <div className="h-screen flex flex-col relative ">
             <button className="hidden" onClick={onSave} ref={btnRef}>
               save
             </button>
@@ -105,7 +118,8 @@ const Editor = () => {
             {!!selectedFile ? (
               <MonacoEditor
                 path={selectedFile.id}
-                height={"100vh"}
+                // height={"100vh"}
+                className="flex-1"
                 onMount={(editor, monaco) => {
                   editor.addAction({
                     id: "save",
@@ -113,6 +127,14 @@ const Editor = () => {
                     keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
                     run() {
                       btnRef.current?.click();
+                    },
+                  });
+                  editor.addAction({
+                    id: "showTerminal",
+                    label: "Show/Hide Terminal",
+                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyJ],
+                    run() {
+                      toggleTerminal();
                     },
                   });
                 }}
@@ -132,6 +154,7 @@ const Editor = () => {
             ) : (
               <div>No file selected</div>
             )}
+            <div className="h-40 bg-green-400 thatthing absolute bottom-0 left-0 w-full"></div>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
