@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Result;
 use std::fs;
 use std::path::Path;
+use std::io;
+
 
 // #[warn(dead_code)]
 #[derive(Serialize, Deserialize, Debug)]
@@ -83,18 +85,33 @@ pub fn write_file(path: &str, content: &str) -> String {
 
 pub fn create_directory(path: &str) -> Result<()> {
     let dir_path = Path::new(path);
-    fs::create_dir(dir_path);
+    fs::create_dir(dir_path).expect("ERROR");
     Ok(())
 }
 
 pub fn remove_file(path: &str) -> Result<()> {
     let file_path = Path::new(path);
-    let _ = fs::remove_file(file_path);
+    let _ = fs::remove_file(file_path).expect("ERROR");
     Ok(())
 }
 
 pub fn remove_folder(path: &str) -> Result<()> {
     let folder_path = Path::new(path);
-    let _ = fs::remove_dir_all(folder_path);
+    let _ = fs::remove_dir_all(folder_path).expect("ERROR");
     Ok(())
+}
+
+
+pub fn rename_file(old_path: &str, new_path: &str) -> io::Result<()> {
+    let old_file_path = Path::new(old_path);
+    let new_file_path = Path::new(new_path);
+
+    // Handle potential errors during renaming
+    match fs::rename(old_file_path, new_file_path) {
+        Ok(_) => Ok(()),
+        Err(err) => {
+            // Provide informative error message using error chaining or formatting
+            Err(io::Error::new(io::ErrorKind::Other, format!("Error renaming file: {}", err)))
+        }
+    }
 }

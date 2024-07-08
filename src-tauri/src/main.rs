@@ -25,10 +25,14 @@ fn write_file(file_path: &str, content: &str) -> String {
     fc::write_file(file_path, content);
     String::from("OK")
 }
+
 #[tauri::command]
-fn remove_file(file_path: &str) -> String {
-    fc::remove_file(file_path);
-    String::from("Ok")
+fn rename_file(old_path: &str, new_path: &str) -> String {
+    let result = fc::rename_file(old_path, new_path);
+    match result {
+        Ok(_) => String::from("OK"),
+        Err(_) => String::from("ERROR"),
+    }
 }
 
 fn main() {
@@ -37,8 +41,7 @@ fn main() {
             greet,
             open_folder,
             get_file_content,
-            write_file,
-            remove_file
+            write_file
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
