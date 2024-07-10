@@ -19,6 +19,7 @@ import EditorHeader from "./EditorHeader";
 import { getFileObject } from "@/stores/file";
 
 import { writeFile } from "@/helpers/filesys";
+import TerminalComponent from "@/app/terminal/page";
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
@@ -154,7 +155,9 @@ const Editor = () => {
             ) : (
               <div>No file selected</div>
             )}
-            <div className="h-40 bg-green-400 thatthing absolute bottom-0 left-0 w-full"></div>
+            <div className="h-40 bg-green-400 thatthing absolute bottom-0 left-0 w-full">
+              <TerminalComponent projectId={projectId || ""} />
+            </div>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
