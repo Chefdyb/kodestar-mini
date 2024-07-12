@@ -56,7 +56,7 @@ struct AppState {
 #[tauri::command]
 async fn async_create_shell(state: State<'_, AppState>) -> Result<(), String> {
     #[cfg(target_os = "windows")]
-    let mut cmd = CommandBuilder::new("powershell.exe");
+    let mut cmd = CommandBuilder::new("cmd.exe");
 
     #[cfg(not(target_os = "windows"))]
     let mut cmd = CommandBuilder::new("bash");
