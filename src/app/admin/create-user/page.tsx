@@ -1,3 +1,4 @@
+import RegisterForm from "@/components/mycomponents/Register";
 import React from "react";
 
 // this page or screen will have forms to create a new user
@@ -6,7 +7,7 @@ import React from "react";
 // values when the form is submitted
 
 const page = () => {
-  return <div>page</div>;
+  return <div><RegisterForm/></div>;
 };
 
 export default page;

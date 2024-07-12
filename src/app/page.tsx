@@ -46,6 +46,13 @@ export default function Home() {
         >
           Go home
         </Button>
+                <Button
+                    onClick={() => {
+                        router.push("/admin/create-user");
+                    }}
+                >
+                    admin
+                </Button>
       </ResizablePanelGroup>
     </main>
   );
