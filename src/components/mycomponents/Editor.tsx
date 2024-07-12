@@ -100,10 +100,7 @@ const Editor = () => {
 
   return (
     <main className=" h-screen w-full overflow-auto">
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="h-full rounded-lg border "
-      >
+      <ResizablePanelGroup direction="horizontal" className="h-full  ">
         <ResizablePanel className="min-w-[400px] bg-darken" defaultSize={25}>
           <div className="flex h-full items-start justify-center p-6 ">
             <NewSidebar projectId={projectId || ""} />
@@ -116,48 +113,56 @@ const Editor = () => {
               save
             </button>
             <EditorHeader />
-            {!!selectedFile ? (
-              <MonacoEditor
-                path={selectedFile.id}
-                // height={"100vh"}
-                className="flex-1"
-                onMount={(editor, monaco) => {
-                  editor.addAction({
-                    id: "save",
-                    label: "Save",
-                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-                    run() {
-                      btnRef.current?.click();
-                    },
-                  });
-                  editor.addAction({
-                    id: "showTerminal",
-                    label: "Show/Hide Terminal",
-                    keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyJ],
-                    run() {
-                      toggleTerminal();
-                    },
-                  });
-                }}
-                defaultLanguage="python"
-                // key={selectedFile.id}
-                saveViewState
-                language={ext}
-                theme="vs-dark"
-                // className="bg-red-600"
+            <ResizablePanelGroup direction="vertical" className="h-full  ">
+              <ResizablePanel defaultSize={75}>
+                {!!selectedFile ? (
+                  <MonacoEditor
+                    path={selectedFile.id}
+                    // height={"100vh"}
+                    className="flex-1"
+                    onMount={(editor, monaco) => {
+                      editor.addAction({
+                        id: "save",
+                        label: "Save",
+                        keybindings: [
+                          monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+                        ],
+                        run() {
+                          btnRef.current?.click();
+                        },
+                      });
+                      editor.addAction({
+                        id: "showTerminal",
+                        label: "Show/Hide Terminal",
+                        keybindings: [
+                          monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyJ,
+                        ],
+                        run() {
+                          toggleTerminal();
+                        },
+                      });
+                    }}
+                    defaultLanguage="python"
+                    // key={selectedFile.id}
+                    saveViewState
+                    language={ext}
+                    theme="vs-dark"
+                    // className="bg-red-600"
 
-                value={selectedFileContent}
-                onChange={(content) => {
-                  editSelectedFile(content ? content : "");
-                }}
-                // options={{theme:}}
-              />
-            ) : (
-              <div>No file selected</div>
-            )}
-            <div className="h-40 bg-green-400 thatthing absolute bottom-0 left-0 w-full">
+                    value={selectedFileContent}
+                    onChange={(content) => {
+                      editSelectedFile(content ? content : "");
+                    }}
+                    // options={{theme:}}
+                  />
+                ) : (
+                  <div className="flex-1 bg-stone-900">No file selected</div>
+                )}
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+
               <TerminalComponent projectId={projectId || ""} />
-            </div>
+            </ResizablePanelGroup>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

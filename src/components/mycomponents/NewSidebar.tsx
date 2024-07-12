@@ -15,6 +15,7 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
     const appDataDirPath = await appDataDir();
     console.log(appDataDirPath);
     console.log("loadingg, project...");
+
     readDirectory(
       appDataDirPath + "/databases/user_projects/divquan/" + projectId + "/"
     ).then((files) => {

@@ -12,6 +12,7 @@ import { FitAddon } from "xterm-addon-fit";
 import "xterm/css/xterm.css";
 import { invoke } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
+import { ResizablePanel } from "@/components/ui/resizable";
 
 const TerminalComponent = ({ projectId }: { projectId: string }) => {
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,7 @@ const TerminalComponent = ({ projectId }: { projectId: string }) => {
   const fitTerminal = useCallback(async () => {
     if (fitAddonRef.current && termRef.current) {
       fitAddonRef.current.fit();
+      console.log("rows, cols: ", termRef.current.rows, termRef.current.cols);
       await invoke("async_resize_pty", {
         rows: termRef.current.rows,
         cols: termRef.current.cols,
@@ -110,11 +112,17 @@ const TerminalComponent = ({ projectId }: { projectId: string }) => {
   }, []);
 
   return (
-    <div
-      id="terminal"
-      ref={terminalRef}
-      style={{ width: "100%", height: "100%" }}
-    ></div>
+    <ResizablePanel
+      defaultSize={75}
+      className=" bg-gray-600  bottom-0 left-0 w-full"
+      onResize={fitTerminal}
+    >
+      <div
+        id="terminal"
+        ref={terminalRef}
+        style={{ width: "100%", height: "100%" }}
+      ></div>
+    </ResizablePanel>
   );
 };
 
