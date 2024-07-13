@@ -21,12 +21,7 @@ import { toast } from "sonner";
 
 function RegisterForm() {
     const router = useRouter();
-    function handleToast(e: React.FormEvent) {
-        e.preventDefault();
-        console.log("first");
-        toast.success("User created successfully");
-    }
-
+    
     const [credentials, setCredentials] = useState({
         email: "",
         password: "",
@@ -69,7 +64,7 @@ function RegisterForm() {
         <>
             <div className="grid h-screen  w-screen place-content-center">
                 <Card className="z-30 w-full max-w-sm">
-                    <form onSubmit={handleToast}>
+                    <form onSubmit={handleRegister}>
                         <CardHeader>
                             <CardTitle className="text-center text-2xl">
                                 Register
