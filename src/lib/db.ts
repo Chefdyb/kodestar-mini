@@ -1,6 +1,6 @@
 import Dexie, { Table } from "dexie";
-interface User {
-    id?: number;
+export interface User {
+    id?: string;
     email: string;
     password: string;
 }
