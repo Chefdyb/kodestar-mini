@@ -18,11 +18,13 @@ import { useRouter } from "next/navigation";
 
 import { createUser } from "@/lib/utils";
 import { toast } from "sonner";
+import Link from "next/link";
 
 function RegisterForm() {
     const router = useRouter();
-    
+
     const [credentials, setCredentials] = useState({
+        name: "",
         email: "",
         password: "",
     });
@@ -35,6 +37,7 @@ function RegisterForm() {
         e.preventDefault();
         setCredentials((prev) => {
             return {
+                name: prev.name.trim(),
                 email: prev.email.trim(),
                 password: prev.password,
             };
@@ -44,9 +47,10 @@ function RegisterForm() {
             setCredentials({
                 email: "",
                 password: "",
+                name: "",
             });
-            await createUser(credentials.email, credentials.password);
-            router.push("/admin/create-user");
+            await createUser(credentials.name, credentials.email, credentials.password);
+            router.push("/login");
         } catch (error: string | any) {
             if (
                 error.message.includes("Unable to add key to index") &&
@@ -62,22 +66,36 @@ function RegisterForm() {
 
     return (
         <>
-            <div className="grid h-screen  w-screen place-content-center">
+            <div className=" h-screen flex  justify-center items-center">
                 <Card className="z-30 w-full max-w-sm">
                     <form onSubmit={handleRegister}>
                         <CardHeader>
                             <CardTitle className="text-center text-2xl">
-                                Register
+                                <div className=" w-full flex justify-around items-center ">
+                                    <span>Registration</span>
+                                    <Link href="/login"><Button>Login</Button></Link>
+                                </div>
                             </CardTitle>
                             <CardDescription>Register to Users</CardDescription>
                         </CardHeader>
                         <CardContent className="grid gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">email</Label>
+                                <Label htmlFor="name">Name</Label>
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    placeholder="Maame Yaa"
+                                    required
+                                    value={credentials.name}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="isaacquan"
+                                    placeholder="yaa@gmail.com"
                                     required
                                     value={credentials.email}
                                     onChange={handleInputChange}

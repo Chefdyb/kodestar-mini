@@ -1,8 +1,5 @@
 "use client";
 import { useState } from "react";
-import {createDir, Dir} from "@tauri-apps/api/fs";
-import {pictureDir} from "@tauri-apps/api/path"
-import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import db from "@/lib/db";
 import {
@@ -18,9 +15,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { string } from "zod";
 import Lottie from "react-lottie-player";
-import Animation from "@/lottifiles/Animation.json"
-// Alternatively:
-// import Lottie from 'react-lottie-player/dist/LottiePlayerLight'
+import Animation from "@/lottifiles/Animation.json";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginForm() {
     const [email, setEmail] = useState("");
@@ -28,19 +25,16 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const router = useRouter();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
-        const picturesPath = await pictureDir()
-        const newDirName = "users"
-        const fullPath = `${picturesPath}/${newDirName}`
-        await createDir(fullPath, {recursive: true})
-        console.log("Folder successfully created")
+
         // Basic client-side validation
         if (!email || !password) {
             setError("Email and password are required");
-            toast.error(error);
+            toast.error("Email and password are required");
             setLoading(false);
             return;
         }
@@ -48,13 +42,21 @@ export default function LoginForm() {
         try {
             // Fetch the user from the database
             const user = await db.users.get({ email });
+            user && console.log(user);
 
             // Check if user exists and password matches
             if (user && user.password === password) {
                 toast.success("Login successful!");
-                // Redirect or perform any other actions upon successful login
+                // redirect to editor page
+                sessionStorage.setItem(
+                    "auth-session-kodestar",
+                    JSON.stringify(user.id)
+                );
+                router.push("/home");
             } else {
-                toast.error(error);
+                toast.error(`Invalid email or password`);
+
+                return;
             }
         } catch (err) {
             console.error("Error fetching user:", err);
@@ -79,10 +81,17 @@ export default function LoginForm() {
                 </div>
                 <Card className="w-full border-none shadow-none rounded-none h-full grid place-content-center max-w-sm">
                     <CardHeader>
-                        <CardTitle className="text-2xl">Login</CardTitle>
+                        <CardTitle className="text-2xl">
+                            <div className=" w-full flex justify-around items-center">
+                                <span>Login</span>
+                                <Link href="/admin/create-user">
+                                    <Button>Register</Button>
+                                </Link>
+                            </div>
+                        </CardTitle>
                         <CardDescription>
-                            Enter your student email below to login to your
-                            account.
+                            Enter your student email and password below to login
+                            to your IDE.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4">

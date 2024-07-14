@@ -2,6 +2,7 @@ import Dexie, { Table } from "dexie";
 export interface User {
     id?: string;
     email: string;
+    name: string;
     password: string;
 }
 class Kodestar extends Dexie {
@@ -10,7 +11,7 @@ class Kodestar extends Dexie {
     constructor() {
         super("Kodestar");
         this.version(1).stores({
-            users: "&id, &email, password", // Define schema for users table
+            users: "&id, name, &email, password", // Define schema for users table
         });
 
         this.users = this.table("users");

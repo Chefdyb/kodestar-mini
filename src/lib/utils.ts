@@ -13,8 +13,9 @@ import { v4 as uuid } from "uuid";
 import { User } from "@/lib/db";
 import { toast } from "sonner";
 
-export async function createUser(email: string, password: string) {
+export async function createUser(name: string, email: string, password: string) {
     const user: User = {
+        name,
         email,
         password,
         id: uuid(),
