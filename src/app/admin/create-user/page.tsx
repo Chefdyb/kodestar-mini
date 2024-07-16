@@ -18,7 +18,9 @@ import { useRouter } from "next/navigation";
 
 import { createUser } from "@/lib/utils";
 import { toast } from "sonner";
+import { createDir, BaseDirectory } from '@tauri-apps/api/fs';
 import Link from "next/link";
+
 
 function RegisterForm() {
     const router = useRouter();
@@ -34,7 +36,12 @@ function RegisterForm() {
     };
 
     const handleRegister = async (e: React.FormEvent) => {
+        
         e.preventDefault();
+        
+
+        
+
         setCredentials((prev) => {
             return {
                 name: prev.name.trim(),
@@ -49,7 +56,9 @@ function RegisterForm() {
                 password: "",
                 name: "",
             });
-            await createUser(credentials.name, credentials.email, credentials.password);
+          const res=  await createUser(credentials.name, credentials.email, credentials.password);
+          await createDir('databases/user_projects/'+res, { dir: BaseDirectory.AppData, recursive: true });
+
             router.push("/login");
         } catch (error: string | any) {
             if (

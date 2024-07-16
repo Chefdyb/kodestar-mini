@@ -14,12 +14,17 @@ import { User } from "@/lib/db";
 import { toast } from "sonner";
 
 export async function createUser(name: string, email: string, password: string) {
+    const useruid = uuid()
     const user: User = {
         name,
         email,
         password,
-        id: uuid(),
+        id: useruid,
     };
 
     await db.users.add(user);
+    return  useruid;
+
+
 }
+

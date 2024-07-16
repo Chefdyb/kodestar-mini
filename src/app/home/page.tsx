@@ -13,19 +13,19 @@ import ProjectActions from "@/components/mycomponents/projectActions";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon, GitHubLogoIcon, PlusIcon } from "@radix-ui/react-icons";
 import React, { useState, useEffect } from "react";
-import { createDir, BaseDirectory, writeTextFile } from "@tauri-apps/api/fs";
+import { createDir, BaseDirectory, writeTextFile, readDir } from "@tauri-apps/api/fs";
 import { useRouter } from "next/navigation";
 import { User } from "@/lib/db";
 
 function App() {
     const [user, setUser] = useState<User | null | undefined>(null);
     const router = useRouter();
-
     const getUser = async (id: string | null | undefined) => {
         const user = await db.users.get({ id });
-
+        
         setUser(user);
     };
+
 
     const onCreateProject = async (details: {
         name: string;
@@ -98,6 +98,13 @@ const RecentProjects = () => {
     const filteredData = projects.filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    useEffect(() => {
+        readDir('', { dir: BaseDirectory.AppData, recursive: true })
+            .then((res) => { console.log(res) })
+                .catch((e) => console.warn(e));
+
+    }, [])
     return (
         <div className=" flex flex-col mt-6 max-w-lg w-full ">
             <h2 className="text-lg mb-2 text-gray-400 font-mono font-extrabold">
@@ -108,8 +115,8 @@ const RecentProjects = () => {
                     <SearchFilter
                         searchTerm={searchTerm}
                         setSearchTerm={setSearchTerm}
-                    />
-                    <ProjectList projects={filteredData} />
+                    />{
+                        <ProjectList projects={filteredData} />}
                 </GlassCardContent>
             </GlassCard>
         </div>
