@@ -1,19 +1,20 @@
 import Dexie, { Table } from "dexie";
 export interface User {
-    id?: string;
+    id: string;
     email: string;
     name: string;
     password: string;
 }
 export interface Project {
-    id?: string;
+    id: string;
     createdAt: Date;
     modifiedAt: Date;
     name: string;
     cloudSynced: boolean;
+    primaryLanguage:string
 }
 export interface Settings {
-    id?: string;
+    id: string;
     userID: string;
     theme: "Light" | "Dark";
     cloudSyncActive: boolean;
@@ -29,7 +30,7 @@ class Kodestar extends Dexie {
         this.version(1).stores({
             // Define schema for users table
             users: "&id, name, &email, password",
-            projects: "&id, createdAt, modifiedAt, name",
+            projects: "&id, createdAt, modifiedAt, name, primaryLanguage",
             settings: "&id, userID, theme, cloudSyncActive",
         });
 
