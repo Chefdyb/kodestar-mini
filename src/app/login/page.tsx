@@ -69,8 +69,11 @@ export default function LoginForm() {
     };
 
     return (
-        <main className="h-screen flex items-center justify-center bg-slate-50">
-            <section className="overflow-hidden border rounded-md   md:h-[70vh] flex items-center justify-center">
+        <main className="  h-screen flex items-center justify-center bg-slate-50">
+            <section className="overflow-hidden relative border rounded-md   md:h-[70vh] flex items-center justify-center">
+                <Link href="/admin/create-user" className=" absolute top-4 right-10 ">
+                    <Button variant={"secondary"}>Register</Button>
+                </Link>
                 <div className="h-full hidden md:block  overflow-hidden">
                     <Lottie
                         className="w-full h-full"
@@ -79,14 +82,11 @@ export default function LoginForm() {
                         play
                     />
                 </div>
-                <Card className="w-full border-none shadow-none rounded-none h-full grid place-content-center max-w-sm">
+                <Card className="w-full  border-none shadow-none rounded-none h-full grid place-content-center max-w-sm">
                     <CardHeader>
                         <CardTitle className="text-2xl">
-                            <div className=" w-full flex justify-around items-center">
+                            <div className=" w-full flex justify-start">
                                 <span>Login</span>
-                                <Link href="/admin/create-user">
-                                    <Button>Register</Button>
-                                </Link>
                             </div>
                         </CardTitle>
                         <CardDescription>
