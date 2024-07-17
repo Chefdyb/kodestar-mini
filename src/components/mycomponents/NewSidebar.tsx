@@ -7,6 +7,7 @@ import { readDirectory } from "@/helpers/filesys";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
 import { useSource } from "@/context/NewSourceContext";
+import { getUser } from "@/lib/utils";
 
 const NewSidebar = ({ projectId }: { projectId: string }) => {
   const [files, setFiles] = useState<IFile[]>([]);
@@ -15,13 +16,14 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
     const appDataDirPath = await appDataDir();
     console.log(appDataDirPath);
     console.log("loadingg, project...");
+    const { id } = await getUser();
 
-    // readDirectory(
-    //   appDataDirPath + "/databases/user_projects/divquan/" + projectId + "/"
-    // ).then((files) => {
-    //   // console.log(files);
-    //   setFiles(files);
-    // });
+    readDirectory(
+      `${appDataDirPath}/databases/user_projects/${id}/${projectId}/`
+    ).then((files) => {
+      // console.log(files);
+      setFiles(files);
+    });
   };
 
   const removeFile = (id: string) => {

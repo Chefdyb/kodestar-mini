@@ -11,7 +11,7 @@ export interface Project {
     modifiedAt: Date;
     name: string;
     cloudSynced: boolean;
-    primaryLanguage:string
+    primaryLanguage: string;
 }
 export interface Settings {
     id: string;

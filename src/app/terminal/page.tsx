@@ -7,12 +7,15 @@ import React, {
     useCallback,
     useState,
 } from "react";
-import { Terminal } from "xterm";
+// import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import "xterm/css/xterm.css";
 import { invoke } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import { ResizablePanel } from "@/components/ui/resizable";
+import { getUser } from "@/lib/utils";
+import { type } from "@tauri-apps/api/os";
+import { Terminal } from "@xterm/xterm";
 
 const TerminalComponent = ({ projectId }: { projectId: string }) => {
     const [loading, setLoading] = useState(false);
@@ -46,12 +49,9 @@ const TerminalComponent = ({ projectId }: { projectId: string }) => {
     }, []);
 
     const initShell = useCallback(() => {
-        invoke("async_create_shell").catch((error: unknown) => {});
-
-        try {
-        } catch (error) {
+        invoke("async_create_shell").catch((error: unknown) => {
             console.error("Error creating shell:", error);
-        }
+        });
     }, []);
 
     useLayoutEffect(() => {
@@ -59,7 +59,6 @@ const TerminalComponent = ({ projectId }: { projectId: string }) => {
 
         const fitAddon = new FitAddon();
         const term = new Terminal({
-            // fontFamily: "Jetbrains Mono",
             theme: {
                 background: "rgb(47, 47, 47)",
             },
@@ -88,40 +87,41 @@ const TerminalComponent = ({ projectId }: { projectId: string }) => {
 
         const init = async () => {
             if (termRef.current) {
-                // Send 'cd' command to the PTY directly
+                const osType = await type();
                 if (loading) return;
 
                 const appDataDirPath = await appDataDir();
-
+                const { id } = await getUser();
                 const projectPath =
                     appDataDirPath +
-                    "databases/user_projects/divquan/" +
-                    projectId +
-                    "/";
-                const formatted = projectPath.replace(/ /g, "\\ ");
+                    (osType === "Windows_NT"
+                        ? `databases\\user_projects\\${id}\\${projectId}\\`
+                        : `databases/user_projects/${id}/${projectId}/`);
 
-                console.log(projectPath, formatted);
+                const formatted = projectPath.replace(/\//g, "\\");
 
-                writeToPty(`cd ${formatted}\n`);
+                console.log(formatted);
+                writeToPty(`cd ${formatted} \n\n`);
                 setLoading(true);
                 clearInterval(interval);
             }
         };
-        // Ensure terminal is fully initialized before sending the cd command
-        const interval = setInterval(() => {
-            init();
-        }, 100);
+
+        const interval = setInterval(init, 100);
+
+        console.count("Terminal init");
 
         return () => {
             term.dispose();
             window.removeEventListener("resize", fitTerminal);
+            clearInterval(interval);
         };
-    }, []);
+    }, [writeToPty, fitTerminal, initShell, loading, projectId]);
 
     return (
         <ResizablePanel
             defaultSize={75}
-            className=" bg-gray-600  bottom-0 left-0 w-full"
+            className="bg-gray-600 bottom-0 left-0 w-full"
             onResize={fitTerminal}
         >
             <div
