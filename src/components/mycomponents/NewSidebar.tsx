@@ -16,12 +16,12 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
     console.log(appDataDirPath);
     console.log("loadingg, project...");
 
-    readDirectory(
-      appDataDirPath + "/databases/user_projects/divquan/" + projectId + "/"
-    ).then((files) => {
-      // console.log(files);
-      setFiles(files);
-    });
+    // readDirectory(
+    //   appDataDirPath + "/databases/user_projects/divquan/" + projectId + "/"
+    // ).then((files) => {
+    //   // console.log(files);
+    //   setFiles(files);
+    // });
   };
 
   const removeFile = (id: string) => {
