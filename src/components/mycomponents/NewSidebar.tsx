@@ -8,20 +8,23 @@ import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
 import { useSource } from "@/context/NewSourceContext";
 import { getUser } from "@/lib/utils";
+import { type } from "@tauri-apps/api/os";
 
 const NewSidebar = ({ projectId }: { projectId: string }) => {
   const [files, setFiles] = useState<IFile[]>([]);
 
   const loadProject = async () => {
     const appDataDirPath = await appDataDir();
-    console.log(appDataDirPath);
-    console.log("loadingg, project...");
+    const osType = await type();
+
     const { id } = await getUser();
 
-    readDirectory(
-      `${appDataDirPath}/databases/user_projects/${id}/${projectId}/`
-    ).then((files) => {
-      // console.log(files);
+    const path =
+      osType === "Windows_NT"
+        ? `${appDataDirPath}/databases/user_projects/${id}/${projectId}/`
+        : `${appDataDirPath}databases/user_projects/${id}/${projectId}/`;
+    console.log("path", path);
+    readDirectory(path).then((files) => {
       setFiles(files);
     });
   };

@@ -7,6 +7,7 @@ export interface User {
 }
 export interface Project {
     id: string;
+    userID: string
     createdAt: Date;
     modifiedAt: Date;
     name: string;
@@ -30,7 +31,7 @@ class Kodestar extends Dexie {
         this.version(1).stores({
             // Define schema for users table
             users: "&id, name, &email, password",
-            projects: "&id, createdAt, modifiedAt, name, primaryLanguage",
+            projects: "&id, userID, createdAt, modifiedAt, name, primaryLanguage",
             settings: "&id, userID, theme, cloudSyncActive",
         });
 

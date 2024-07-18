@@ -18,7 +18,6 @@ import { useSource } from "@/context/NewSourceContext";
 import EditorHeader from "./EditorHeader";
 import { getFileObject } from "@/stores/file";
 
-import { writeFile } from "@/helpers/filesys";
 import TerminalComponent from "@/app/terminal/page";
 import BottomBar from "./BottomBar";
 
@@ -94,7 +93,7 @@ const Editor = () => {
   
   
   */
-  const [showTerminal, setShowTerminal] = useState(false);
+  const [showTerminal, setShowTerminal] = useState(true);
   const toggleTerminal = () => {
     setShowTerminal((init) => !init);
   };
@@ -150,7 +149,7 @@ const Editor = () => {
                     language={ext}
                     theme="vs-dark"
                     // className="bg-red-600"
-                    loading={<div>ljkkhgy</div>}
+                    // loading={<div className="bg-green"></div>}
                     value={selectedFileContent}
                     onChange={(content) => {
                       editSelectedFile(content ? content : "");
@@ -162,9 +161,10 @@ const Editor = () => {
                 )}
               </ResizablePanel>
               <ResizableHandle withHandle />
-              {showTerminal ? (
-                <TerminalComponent projectId={projectId || ""} />
-              ) : null}{" "}
+              <TerminalComponent
+                projectId={projectId || ""}
+                showTerminal={showTerminal}
+              />
             </ResizablePanelGroup>
           </div>
         </ResizablePanel>

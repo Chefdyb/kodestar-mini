@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FaUser } from "react-icons/fa6";
+import { FaFolder, FaUser } from "react-icons/fa6";
 
 const ProjectActions = ({ onCreateProject }: { onCreateProject: Function }) => {
   return (
@@ -28,15 +28,10 @@ const ProjectActions = ({ onCreateProject }: { onCreateProject: Function }) => {
           </GlassCard>
         </DialogTrigger>
         <GlassCard className=" flex  aspect-square gap-2 flex-col items-center p-2 cursor-pointer hover:bg-opacity-25">
-          <PlusIcon
-            height={43}
-            width={43}
-            color="gold"
-            className="text-yello-700"
-          />
+          <FaFolder size={43} color="gold" className="text-yello-700" />
           <GlassCardContent className="text-lg text-gray-300 font-bold font-mono text-center">
-            Something <br />
-            Else{" "}
+            Project <br />
+            Explorer
           </GlassCardContent>
         </GlassCard>
         <GlassCard className=" flex  aspect-square gap-2 flex-col justify-center items-center p-2 cursor-pointer hover:bg-opacity-25">
