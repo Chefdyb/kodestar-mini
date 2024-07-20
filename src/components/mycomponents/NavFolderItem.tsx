@@ -1,7 +1,12 @@
 "use client";
 import { nanoid } from "nanoid";
 import { useEffect, useMemo, useState } from "react";
-import { deleteFolder, readDirectory, writeFile } from "@/helpers/filesys";
+import {
+  createDirectory,
+  deleteFolder,
+  readDirectory,
+  writeFile,
+} from "@/helpers/filesys";
 import { saveFileObject } from "@/stores/file";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
@@ -67,7 +72,7 @@ export default function NavFolderItem({ file, active, removeItem }: Props) {
     }
   };
 
-  const onEnter = (key: string) => {
+  const onEnter = async (key: string) => {
     if (key === "Escape") {
       setNewFile(false);
       setFilename("");
@@ -93,9 +98,22 @@ export default function NavFolderItem({ file, active, removeItem }: Props) {
         setFilename("");
       });
     }
+
+    const newFolderPath = `${file.path}/${filename}`;
     if (newItem === "folder") {
-      const newFolderPath = `${file.path}/${filename}`;
-      console.log(newFolderPath);
+      console.log("it is me, mother sucker");
+      const id = nanoid();
+      const newFile: IFile = {
+        id,
+        name: filename,
+        path: newFolderPath,
+        kind: "directory",
+      };
+      await createDirectory(newFolderPath);
+      saveFileObject(id, newFile);
+      setFiles((prevEntries) => [newFile, ...prevEntries]);
+      setNewItem(null);
+      setFilename("");
     }
   };
 

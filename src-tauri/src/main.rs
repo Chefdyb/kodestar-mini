@@ -38,6 +38,12 @@ fn remove_folder(file_path: &str) -> String {
     String::from("OK")
 }
 
+#[tauri::command]
+fn create_directory(file_path: &str) -> String {
+    fc::create_directory(file_path);
+    String::from("OK")
+}
+
 
 #[tauri::command]
 fn rename_file(old_path: &str, new_path: &str) -> String {
@@ -172,8 +178,8 @@ fn main() {
             async_create_shell,
             async_read_from_pty,
             remove_file,
-            remove_folder
-
+            remove_folder,
+            create_directory
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
