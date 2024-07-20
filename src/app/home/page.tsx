@@ -116,7 +116,7 @@ const RecentProjects = ({ user }: { user: User | null }) => {
     console.log(user.id);
 
     db.projects
-      .where("id")
+      .where("userID")
       .equals(user.id)
       .toArray()
       .then((res) => {

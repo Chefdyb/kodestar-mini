@@ -18,8 +18,8 @@ import { useSource } from "@/context/NewSourceContext";
 import EditorHeader from "./EditorHeader";
 import { getFileObject } from "@/stores/file";
 
-import TerminalComponent from "@/app/terminal/page";
 import BottomBar from "./BottomBar";
+import TerminalComponent from "./Terminal";
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
@@ -101,7 +101,7 @@ const Editor = () => {
   return (
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup direction="horizontal" className="h-full  ">
-        <ResizablePanel className="min-w-[400px] bg-darken" defaultSize={25}>
+        <ResizablePanel className="min-w-[400px] bg-stone-900" defaultSize={25}>
           <div className="flex h-full items-start justify-center p-6 ">
             <NewSidebar projectId={projectId || ""} />
           </div>
@@ -157,7 +157,11 @@ const Editor = () => {
                     // options={{theme:}}
                   />
                 ) : (
-                  <div className="flex-1 bg-stone-900">No file selected</div>
+                  <div className="flex-1 bg-stone-900 h-full flex items-center justify-center">
+                    <span className="text-lg text-white font-mono">
+                      No file selected
+                    </span>
+                  </div>
                 )}
               </ResizablePanel>
               <ResizableHandle withHandle />

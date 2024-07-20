@@ -34,6 +34,12 @@ export const deleteFile = (filePath: string): Promise<string> => {
             resolve(message as string);
         });
     });
+};export const deleteFolder = (filePath: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        invoke("remove_folder", { filePath }).then((message: unknown) => {
+            resolve(message as string);
+        });
+    });
 };
 
 export const readDirectory = (folderPath: string): Promise<IFile[]> => {

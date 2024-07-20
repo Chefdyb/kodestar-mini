@@ -1,23 +1,53 @@
 "use client";
 import { nanoid } from "nanoid";
-import { useMemo, useState } from "react";
-import { readDirectory, writeFile } from "@/helpers/filesys";
+import { useEffect, useMemo, useState } from "react";
+import { deleteFolder, readDirectory, writeFile } from "@/helpers/filesys";
 import { saveFileObject } from "@/stores/file";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
 import { getIconForFolder, getIconForOpenFolder } from "vscode-icons-js";
 import { PlusIcon } from "@radix-ui/react-icons";
-
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useSource } from "@/context/NewSourceContext";
+import { FaFolder, FaRegFileImage } from "react-icons/fa6";
 interface Props {
   file: IFile;
   active: boolean;
+  removeItem: (id: string) => void;
 }
-export default function NavFolderItem({ file, active }: Props) {
+export default function NavFolderItem({ file, active, removeItem }: Props) {
   const [files, setFiles] = useState<IFile[]>([]);
   const [unfold, setUnfold] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [newFile, setNewFile] = useState(false);
   const [filename, setFilename] = useState("");
+
+  const [newItem, setNewItem] = useState<"file" | "folder" | null>(null);
+
+  const [deleteDetails, setDeleteDetails] = useState<IFile | null>(null);
 
   const onShow = async (ev: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     ev.stopPropagation();
@@ -45,24 +75,30 @@ export default function NavFolderItem({ file, active }: Props) {
     }
 
     if (key !== "Enter") return;
+    if (newItem === "file") {
+      const filePath = `${file.path}/${filename}`;
 
-    const filePath = `${file.path}/${filename}`;
+      writeFile(filePath, "").then(() => {
+        const id = nanoid();
+        const newFile: IFile = {
+          id,
+          name: filename,
+          path: filePath,
+          kind: "file",
+        };
 
-    writeFile(filePath, "").then(() => {
-      const id = nanoid();
-      const newFile: IFile = {
-        id,
-        name: filename,
-        path: filePath,
-        kind: "file",
-      };
-
-      saveFileObject(id, newFile);
-      setFiles((prevEntries) => [newFile, ...prevEntries]);
-      setNewFile(false);
-      setFilename("");
-    });
+        saveFileObject(id, newFile);
+        setFiles((prevEntries) => [newFile, ...prevEntries]);
+        setNewItem(null);
+        setFilename("");
+      });
+    }
+    if (newItem === "folder") {
+      const newFolderPath = `${file.path}/${filename}`;
+      console.log(newFolderPath);
+    }
   };
+
   const iconName = useMemo(() => {
     return unfold
       ? getIconForOpenFolder(file.name)
@@ -72,37 +108,66 @@ export default function NavFolderItem({ file, active }: Props) {
   const removeFile = (id: string) => {
     setFiles((prev) => prev.filter((file) => file.id !== id));
   };
+
+  console.log("these are all thhe files", files);
   return (
     <div className="soure-item">
-      <div
-        className={`source-folder group ${
-          active ? "bg-gray-200" : ""
-        } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer`}
-      >
-        <img src={"/icons/" + iconName} className=" h-5" />
+      <AlertDialog key={file.id}>
+        <ContextMenu modal={false}>
+          <ContextMenuTrigger>
+            <div
+              className={`source-folder group ${
+                active ? "bg-gray-200" : ""
+              } flex items-center gap-2 px-2 py-0.5 text-gray-500 hover:text-gray-400 cursor-pointer`}
+            >
+              <img src={"/icons/" + iconName} className=" h-5" />
 
-        <div className="source-header flex items-center justify-between w-full group">
-          <span onClick={onShow}>{file.name}</span>
-          <i
-            onClick={() => setNewFile(true)}
-            className="ri-add-line invisible group-hover:visible"
-          ></i>
-          <PlusIcon
-            className="invisible group-hover:visible"
-            onClick={() => setNewFile(true)}
+              <div className="source-header flex items-center justify-between w-full group">
+                <span onClick={onShow}>{file.name}</span>
+                <i
+                  onClick={() => setNewFile(true)}
+                  className="ri-add-line invisible group-hover:visible"
+                ></i>
+                <NewFileTihnig setNewFile={setNewItem} />
+              </div>
+            </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem>Edit</ContextMenuItem>
+            <ContextMenuItem>Rename</ContextMenuItem>
+            <ContextMenuItem
+              className="hover:bg-red-100 text-red-800"
+              onClick={() => setDeleteDetails(file)}
+            >
+              <AlertDialogTrigger className="w-full text-left">
+                Delete
+              </AlertDialogTrigger>
+            </ContextMenuItem>
+          </ContextMenuContent>
+          <DeleteModal
+            folderToBeDeleted={deleteDetails}
+            files={files}
+            removeFile={removeItem}
           />
-        </div>
-      </div>
-
-      {newFile ? (
-        <div className="mx-4 flex items-center gap-0.5 p-2">
-          <i className="ri-file-edit-line text-gray-300"></i>
+        </ContextMenu>
+      </AlertDialog>
+      {newItem ? (
+        <div className="mx-4 flex items-center gap-0.5 p-2 w-full">
+          {newItem === "folder" ? (
+            <FaFolder className="text-yellow-800 mr-3" size={26} />
+          ) : (
+            <FaRegFileImage className="text-yellow-800 mr-3" size={26} />
+          )}
           <input
             type="text"
             value={filename}
             onChange={(ev) => setFilename(ev.target.value)}
             onKeyUp={(ev) => onEnter(ev.key)}
-            className="inp"
+            className="py-[2px] bg-stone-200  bg-opacity-30 w-full text-stone-200"
+            onBlur={() => {
+              setNewItem(null);
+              setFilename("");
+            }}
           />
         </div>
       ) : null}
@@ -111,3 +176,74 @@ export default function NavFolderItem({ file, active }: Props) {
     </div>
   );
 }
+
+const DeleteModal = ({
+  folderToBeDeleted,
+  files,
+  removeFile,
+}: {
+  folderToBeDeleted: IFile | null;
+  files: IFile[];
+  removeFile: (id: string) => void;
+}) => {
+  const { closeOpenedFile } = useSource();
+  const [loading, setLoading] = useState(false);
+  if (!folderToBeDeleted) return null;
+
+  return (
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          Are you absolutely sure you want to delete{" "}
+          <span className="text-red-800">{folderToBeDeleted.name}</span>?
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          This action cannot be undone. This will permanently delete your
+          account and remove your data from our servers.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <AlertDialogAction
+          onClick={async () => {
+            if (!folderToBeDeleted) return;
+            setLoading(true);
+            console.log(folderToBeDeleted);
+            setLoading(false);
+            // return;
+            await deleteFolder(folderToBeDeleted.path);
+
+            removeFile(folderToBeDeleted.id);
+            // loadProject();
+            closeOpenedFile(folderToBeDeleted.id);
+          }}
+        >
+          Delete
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  );
+};
+const NewFileTihnig = ({
+  setNewFile,
+}: {
+  setNewFile: (arg1: "folder" | "file") => void;
+}) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <PlusIcon className="invisible group-hover:visible" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
+        <DropdownMenuItem onClick={() => setNewFile("folder")}>
+          create folder
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setNewFile("file")}>
+          create file
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};

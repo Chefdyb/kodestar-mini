@@ -2,16 +2,12 @@
 import { MouseEvent, useState } from "react";
 
 import { IFile } from "@/types";
-import FileIcon from "./FileIcon";
+
 import NavFolderItem from "./NavFolderItem";
 import { useSource } from "@/context/NewSourceContext";
 import { deleteFile, readFile } from "@/helpers/filesys";
-import {
-  getIconForFile,
-  getIconForFolder,
-  getIconForOpenFolder,
-} from "vscode-icons-js";
-import { Button } from "../ui/button";
+import { getIconForFile } from "vscode-icons-js";
+
 import {
   ContextMenu,
   ContextMenuContent,
@@ -73,7 +69,12 @@ export default function NavFiles({
 
         if (file.kind === "directory") {
           return (
-            <NavFolderItem active={isSelected} key={file.id} file={file} />
+            <NavFolderItem
+              active={isSelected}
+              key={file.id}
+              file={file}
+              removeItem={removeFile}
+            />
           );
         }
 
@@ -153,10 +154,11 @@ const DeleteModal = ({
           onClick={async () => {
             if (!fileToBeDeleted) return;
             setLoading(true);
-            console.log(files, fileToBeDeleted);
+            console.log(fileToBeDeleted.path);
+            setLoading(false);
+            // return;
             await deleteFile(fileToBeDeleted.path);
             removeFile(fileToBeDeleted.id);
-            setLoading(false);
             // loadProject();
             closeOpenedFile(fileToBeDeleted.id);
           }}

@@ -27,6 +27,19 @@ fn write_file(file_path: &str, content: &str) -> String {
 }
 
 #[tauri::command]
+fn remove_file(file_path: &str) -> String {
+    fc::remove_file(file_path);
+    String::from("OK")
+}
+
+#[tauri::command]
+fn remove_folder(file_path: &str) -> String {
+    fc::remove_folder(file_path);
+    String::from("OK")
+}
+
+
+#[tauri::command]
 fn rename_file(old_path: &str, new_path: &str) -> String {
     let result = fc::rename_file(old_path, new_path);
     match result {
@@ -157,7 +170,10 @@ fn main() {
             async_write_to_pty,
             async_resize_pty,
             async_create_shell,
-            async_read_from_pty
+            async_read_from_pty,
+            remove_file,
+            remove_folder
+
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
