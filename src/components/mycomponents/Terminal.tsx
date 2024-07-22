@@ -7,6 +7,8 @@ import React, {
   useCallback,
   useState,
 } from "react";
+import { Event, listen } from "@tauri-apps/api/event";
+
 // import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import "xterm/css/xterm.css";
@@ -29,32 +31,24 @@ const TerminalComponent = ({
   const termRef = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
 
-  const fitTerminal = useCallback(async () => {
-    if (fitAddonRef.current && termRef.current) {
-      fitAddonRef.current.fit();
-      console.log("rows, cols: ", termRef.current.rows, termRef.current.cols);
-      await invoke("async_resize_pty", {
-        rows: termRef.current.rows,
-        cols: termRef.current.cols,
-      });
-    }
-  }, []);
+  const fitTerminal = async () => {
+    fitAddon.fit();
 
-  const writeToTerminal = useCallback((data: string): Promise<void> => {
-    return new Promise((resolve) => {
-      termRef.current?.write(data, resolve);
+    console.log("Resizing terminal");
+    console.log(term.rows, term.cols);
+    await invoke("resize_pty", {
+      rows: term.rows,
+      cols: term.cols,
     });
-  }, []);
+  };
 
-  const writeToPty = useCallback((data: string) => {
-    invoke("async_write_to_pty", { data });
-  }, []);
 
-  const initShell = useCallback(() => {
-    invoke("async_create_shell").catch((error: unknown) => {
-      console.error("Error creating shell:", error);
+
+  const writeToPty = (data: string) => {
+    void invoke("write_to_pty", {
+      data,
     });
-  }, []);
+  };
 
   const term = new Terminal({
     theme: {
@@ -130,7 +124,11 @@ const TerminalComponent = ({
       fitAddon.fit();
       term.loadAddon(fitAddon);
       term.open(terminalRef.current);
-      initShell();
+
+      // Invoke async_shell command to create the shell process
+      invoke("async_shell").catch((error) => {
+        console.error("Error creating shell:", error);
+      });
       fitTerminal();
     }
   }, []);
@@ -138,16 +136,13 @@ const TerminalComponent = ({
   termRef.current = term;
   fitAddonRef.current = fitAddon;
 
-  term.onData(writeToPty)
-  const readFromPty = async () => {
-    const data = await invoke<string>("async_read_from_pty");
-    if (data) {
-      await writeToTerminal(data);
-    }
-    window.requestAnimationFrame(readFromPty);
+  term.onData(writeToPty);
+  const writeToTerminal = (ev: Event<string>) => {
+    term.write(ev.payload);
   };
 
-  window.requestAnimationFrame(readFromPty);
+  listen("data", writeToTerminal);
+
   return (
     <ResizablePanel
       defaultSize={75}
