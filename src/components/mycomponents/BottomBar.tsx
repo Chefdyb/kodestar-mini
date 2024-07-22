@@ -2,7 +2,7 @@ import { FaCopy, FaTerminal } from "react-icons/fa6";
 import { IoRefresh, IoRefreshCircleSharp } from "react-icons/io5";
 import { toast } from "sonner";
 
-const BottomBar = ({ closeTerminal }) => {
+const BottomBar = ({ closeTerminal }:any) => {
   return (
     <div className="absolute bottom-0 h-5 w-full bg-red-500 flex justify-between">
       <div>

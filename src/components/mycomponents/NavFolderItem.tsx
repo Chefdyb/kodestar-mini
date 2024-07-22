@@ -41,7 +41,7 @@ import { FaFolder, FaRegFileImage } from "react-icons/fa6";
 interface Props {
   file: IFile;
   active: boolean;
-  removeItem: (id: string) => void;
+  removeItem?: (id: string) => void;
 }
 export default function NavFolderItem({ file, active, removeItem }: Props) {
   const [files, setFiles] = useState<IFile[]>([]);
@@ -202,7 +202,7 @@ const DeleteModal = ({
 }: {
   folderToBeDeleted: IFile | null;
   files: IFile[];
-  removeFile: (id: string) => void;
+  removeFile?: (id: string) => void;
 }) => {
   const { closeOpenedFile } = useSource();
   const [loading, setLoading] = useState(false);
@@ -231,7 +231,7 @@ const DeleteModal = ({
             // return;
             await deleteFolder(folderToBeDeleted.path);
 
-            removeFile(folderToBeDeleted.id);
+        if (removeFile)    removeFile(folderToBeDeleted.id);
             // loadProject();
             closeOpenedFile(folderToBeDeleted.id);
           }}

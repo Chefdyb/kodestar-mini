@@ -1,3 +1,4 @@
+"use client";
 import { writeFile } from "@/helpers/filesys";
 import { getFileObject } from "@/stores/file";
 import {

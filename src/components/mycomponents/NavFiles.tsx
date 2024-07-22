@@ -29,7 +29,7 @@ import {
 interface Props {
   files: IFile[];
   visible: boolean;
-  removeFile: (id: string) => void;
+  removeFile?: (id: string) => void;
 }
 
 export default function NavFiles({
@@ -130,7 +130,7 @@ const DeleteModal = ({
 }: {
   fileToBeDeleted: IFile | null;
   files: IFile[];
-  removeFile: (id: string) => void;
+  removeFile?: (id: string) => void;
 }) => {
   const { closeOpenedFile } = useSource();
   const [loading, setLoading] = useState(false);
@@ -158,7 +158,7 @@ const DeleteModal = ({
             setLoading(false);
             // return;
             await deleteFile(fileToBeDeleted.path);
-            removeFile(fileToBeDeleted.id);
+           if(removeFile) removeFile(fileToBeDeleted.id);
             // loadProject();
             closeOpenedFile(fileToBeDeleted.id);
           }}

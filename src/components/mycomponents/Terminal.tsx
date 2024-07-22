@@ -56,71 +56,98 @@ const TerminalComponent = ({
     });
   }, []);
 
-  useLayoutEffect(() => {
-    if (!terminalRef.current) return;
+  const term = new Terminal({
+    theme: {
+      background: "rgb(47, 47, 47)",
+    },
+  });
+  // useLayoutEffect(() => {
+  //   return;
+  //   if (!terminalRef.current) return;
 
-    const fitAddon = new FitAddon();
-    const term = new Terminal({
-      theme: {
-        background: "rgb(47, 47, 47)",
-      },
-    });
+  //   const fitAddon = new FitAddon();
 
-    term.loadAddon(fitAddon);
-    term.open(terminalRef.current);
-    fitAddon.fit();
+  //   term.loadAddon(fitAddon);
+  //   term.open(terminalRef.current);
+  //   fitAddon.fit();
 
-    termRef.current = term;
-    fitAddonRef.current = fitAddon;
+  //   termRef.current = term;
+  //   fitAddonRef.current = fitAddon;
 
-    term.onData(writeToPty);
-    window.addEventListener("resize", fitTerminal);
+  //   term.onData(writeToPty);
+  //   window.addEventListener("resize", fitTerminal);
 
-    const readFromPty = async () => {
-      const data = await invoke<string>("async_read_from_pty");
-      if (data) {
-        await writeToTerminal(data);
-      }
-      window.requestAnimationFrame(readFromPty);
-    };
+  //   const readFromPty = async () => {
+  //     const data = await invoke<string>("async_read_from_pty");
+  //     if (data) {
+  //       await writeToTerminal(data);
+  //     }
+  //     window.requestAnimationFrame(readFromPty);
+  //   };
 
+  //   window.requestAnimationFrame(readFromPty);
+  //   initShell();
+
+  //   const init = async () => {
+  //     if (termRef.current) {
+  //       const osType = await type();
+  //       if (loading) return;
+
+  //       const appDataDirPath = await appDataDir();
+  //       const { id } = await getUser();
+  //       const projectPath =
+  //         appDataDirPath +
+  //         (osType === "Windows_NT"
+  //           ? `databases\\user_projects\\${id}\\${projectId}\\`
+  //           : `databases/user_projects/${id}/${projectId}/`);
+
+  //       // const formatted = projectPath.replace(/\//g, "\\");
+
+  //       writeToPty(`cd "${projectPath}" \n\n`);
+  //       writeToPty(`clear \n`);
+  //       setLoading(true);
+  //       clearInterval(interval);
+  //     }
+  //   };
+
+  //   const interval = setInterval(init, 100);
+
+  //   console.count("Terminal init");
+
+  //   return () => {
+  //     term.dispose();
+
+  //     window.removeEventListener("resize", fitTerminal);
+  //     clearInterval(interval);
+  //   };
+  // }, [writeToPty, fitTerminal, initShell, loading, projectId]);
+
+  const fitAddon = new FitAddon();
+  useEffect(() => {
+    if (terminalRef.current) {
+      console.log("in terminal");
+      // term.loadAddon(new WebLinksAddon());
+      fitAddon.fit();
+      term.loadAddon(fitAddon);
+      term.open(terminalRef.current);
+      initShell();
+      fitTerminal();
+    }
+  }, []);
+
+  termRef.current = term;
+  fitAddonRef.current = fitAddon;
+
+  term.onData(writeToPty)
+  const readFromPty = async () => {
+    const data = await invoke<string>("async_read_from_pty");
+    if (data) {
+      await writeToTerminal(data);
+    }
     window.requestAnimationFrame(readFromPty);
-    initShell();
+  };
 
-    const init = async () => {
-      if (termRef.current) {
-        const osType = await type();
-        if (loading) return;
-
-        const appDataDirPath = await appDataDir();
-        const { id } = await getUser();
-        const projectPath =
-          appDataDirPath +
-          (osType === "Windows_NT"
-            ? `databases\\user_projects\\${id}\\${projectId}\\`
-            : `databases/user_projects/${id}/${projectId}/`);
-
-        // const formatted = projectPath.replace(/\//g, "\\");
-
-        writeToPty(`cd "${projectPath}" \n\n`);
-        writeToPty(`clear \n`);
-        setLoading(true);
-        clearInterval(interval);
-      }
-    };
-
-    const interval = setInterval(init, 100);
-
-    console.count("Terminal init");
-
-    return () => {
-      term.dispose();
-
-      window.removeEventListener("resize", fitTerminal);
-      clearInterval(interval);
-    };
-  }, [writeToPty, fitTerminal, initShell, loading, projectId]);
-
+  window.requestAnimationFrame(readFromPty);
   return (
     <ResizablePanel
       defaultSize={75}
