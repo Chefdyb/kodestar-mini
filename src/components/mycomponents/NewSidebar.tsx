@@ -31,7 +31,15 @@ import {
   getIconForOpenFolder,
 } from "vscode-icons-js";
 
-const NewSidebar = ({ projectId }: { projectId: string }) => {
+const NewSidebar = ({
+  projectId,
+  reload,
+  setReload,
+}: {
+  projectId: string;
+  reload: boolean;
+  setReload: (arg: boolean) => void;
+}) => {
   const [files, setFiles] = useState<IFile[]>([]);
   const [unfold, setUnfold] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -120,6 +128,12 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
     }
   };
 
+  useEffect(() => {
+    if (reload) {
+      loadProject();
+      setReload(false);
+    }
+  }, [reload]);
   return (
     <div className="flex flex-col w-full h-full font-mono px-2">
       {/* <div className=" w-full font-bold text-gray-200 font-mono  p-4 pb-4 hidden">

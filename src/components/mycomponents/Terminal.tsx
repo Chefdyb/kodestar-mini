@@ -42,8 +42,6 @@ const TerminalComponent = ({
     });
   };
 
-
-
   const writeToPty = (data: string) => {
     void invoke("write_to_pty", {
       data,
@@ -55,66 +53,22 @@ const TerminalComponent = ({
       background: "rgb(47, 47, 47)",
     },
   });
-  // useLayoutEffect(() => {
-  //   return;
-  //   if (!terminalRef.current) return;
+  const init = async () => {
+    const osType = await type();
 
-  //   const fitAddon = new FitAddon();
+    const appDataDirPath = await appDataDir();
+    const { id } = await getUser();
+    const projectPath =
+      appDataDirPath +
+      (osType === "Windows_NT"
+        ? `databases\\user_projects\\${id}\\${projectId}\\`
+        : `databases/user_projects/${id}/${projectId}/`);
 
-  //   term.loadAddon(fitAddon);
-  //   term.open(terminalRef.current);
-  //   fitAddon.fit();
+    // const formatted = projectPath.replace(/\//g, "\\");
 
-  //   termRef.current = term;
-  //   fitAddonRef.current = fitAddon;
-
-  //   term.onData(writeToPty);
-  //   window.addEventListener("resize", fitTerminal);
-
-  //   const readFromPty = async () => {
-  //     const data = await invoke<string>("async_read_from_pty");
-  //     if (data) {
-  //       await writeToTerminal(data);
-  //     }
-  //     window.requestAnimationFrame(readFromPty);
-  //   };
-
-  //   window.requestAnimationFrame(readFromPty);
-  //   initShell();
-
-  //   const init = async () => {
-  //     if (termRef.current) {
-  //       const osType = await type();
-  //       if (loading) return;
-
-  //       const appDataDirPath = await appDataDir();
-  //       const { id } = await getUser();
-  //       const projectPath =
-  //         appDataDirPath +
-  //         (osType === "Windows_NT"
-  //           ? `databases\\user_projects\\${id}\\${projectId}\\`
-  //           : `databases/user_projects/${id}/${projectId}/`);
-
-  //       // const formatted = projectPath.replace(/\//g, "\\");
-
-  //       writeToPty(`cd "${projectPath}" \n\n`);
-  //       writeToPty(`clear \n`);
-  //       setLoading(true);
-  //       clearInterval(interval);
-  //     }
-  //   };
-
-  //   const interval = setInterval(init, 100);
-
-  //   console.count("Terminal init");
-
-  //   return () => {
-  //     term.dispose();
-
-  //     window.removeEventListener("resize", fitTerminal);
-  //     clearInterval(interval);
-  //   };
-  // }, [writeToPty, fitTerminal, initShell, loading, projectId]);
+    writeToPty(`cd "${projectPath}" \n\n`);
+    writeToPty(`clear \n`);
+  };
 
   const fitAddon = new FitAddon();
   useEffect(() => {
@@ -126,9 +80,15 @@ const TerminalComponent = ({
       term.open(terminalRef.current);
 
       // Invoke async_shell command to create the shell process
-      invoke("async_shell").catch((error) => {
-        console.error("Error creating shell:", error);
-      });
+      invoke("async_shell")
+        .then(() => {
+          return init();
+        })
+        .then(() => console.log("Done with the terminal"))
+        .catch((error) => {
+          console.error("Error creating shell:", error);
+          return init();
+        });
       fitTerminal();
     }
   }, []);
@@ -145,12 +105,14 @@ const TerminalComponent = ({
 
   return (
     <ResizablePanel
-      defaultSize={75}
+      defaultSize={25}
       className="bg-gray-600 bottom-0 left-0 w-full"
       onResize={fitTerminal}
       style={{
-        display: showTerminal ? "block" : "hidden",
+        display: showTerminal ? "block" : "none",
       }}
+      order={2}
+      id="terminal"
     >
       <div
         id="terminal"

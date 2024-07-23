@@ -1,19 +1,47 @@
+import { getUser } from "@/lib/utils";
+import { type } from "@tauri-apps/api/os";
+import { appDataDir } from "@tauri-apps/api/path";
 import { FaCopy, FaTerminal } from "react-icons/fa6";
 import { IoRefresh, IoRefreshCircleSharp } from "react-icons/io5";
 import { toast } from "sonner";
 
-const BottomBar = ({ closeTerminal }:any) => {
+const BottomBar = ({
+  closeTerminal,
+  projectId,
+  setReload,
+}: {
+  closeTerminal: () => void;
+  projectId: string;
+  setReload: (arg: boolean) => void;
+}) => {
   return (
-    <div className="absolute bottom-0 h-5 w-full bg-red-500 flex justify-between">
+    <div className="h-5 w-full bg-red-500 flex justify-between ">
       <div>
-        <StatusButton title="Refresh explorer" icon={<IoRefresh />} />
+        <StatusButton
+          title="Refresh explorer"
+          icon={<IoRefresh />}
+          onClick={() => {
+            setReload(true);
+            toast.info("Project Reloaded");
+          }}
+        />
       </div>
       <div className="flex ">
         <StatusButton
           title="Copy project directory"
           icon={<FaCopy />}
-          onClick={() => {
-            navigator.clipboard.writeText("project copied 🙌🏾🙌🏾🙌🏾🙌🏾🙌🏾");
+          onClick={async () => {
+            const { id } = await getUser();
+
+            const osType = await type();
+
+            const appDataDirPath = await appDataDir();
+            const projectPath =
+              osType === "Windows_NT"
+                ? `databases\\user_projects\\${id}\\${projectId}\\`
+                : `databases/user_projects/${id}/${projectId}/`;
+
+            navigator.clipboard.writeText(appDataDirPath + projectPath);
             toast.success("Project directory copied ");
           }}
         />
@@ -35,7 +63,7 @@ const StatusButton = ({
   onClick?: Function;
   loading?: boolean;
 }) => {
-  const handleClick = () => {
+  const handleClick = async () => {
     if (onClick) onClick();
   };
   return (

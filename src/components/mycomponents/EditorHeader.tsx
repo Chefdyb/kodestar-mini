@@ -20,23 +20,37 @@ const EditorHeader = () => {
     console.log("selected changed: ", selected);
   }, [selected]);
 
+  console.log(openedFiles);
+  const openedFiled = [
+    {
+      id: "IwtfmB5T-X_4kPzUqsk0O",
+      initContent: '↵console.log("this shit works")',
+      newContent: '↵console.log("this shit works")',
+      name: "Sample.js",
+    },
+  ];
+
   return (
-    <div className="bg-darken h-[46px] w-full  overflow-x-auto whitespace-nowrap flex items-start">
-      <div className="inline-flex">
-        {openedFiles.map((item, index) => {
+    <div className="bg-stone-900 h-[46px] w-full  overflow-x-auto whitespace-nowrap flex items-start border-b border-stone-700 pt-1 ">
+      <div className="inline-flex h-full ">
+        {openedFiles.map((item) => {
           return (
             <div
               key={item.id}
-              className={`px-1 py-1  w-fit  h-full text-gray-200 items-center justify-center flex group/fileButton m-0 bg-darken  flex-col gap-2 cursor-pointer `}
+              className={`px-3 py-1 transition-all duration-600 w-fit  h-full text-gray-200 items-center justify-center flex group/fileButton m-0 bg-stone-900  flex-col gap-2 cursor-pointer ${
+                selected === item.id
+                  ? "  border-yellow-900 rounded-2xl  "
+                  : " border-stone-900"
+              } border-t-2 border-x-2 rounded-b-none`}
               onClick={() => {
                 setSelect(item.id);
               }}
             >
-              <div
+              {/* <div
                 className={`w-full h-[2px] ${
                   selected === item.id && "bg-red-400"
                 }`}
-              ></div>
+              ></div> */}
               <div className="flex items-center gap-3 ">
                 <div className="h-5 w-5">
                   <img

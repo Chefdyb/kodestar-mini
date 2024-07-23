@@ -157,11 +157,14 @@ export default function NavFolderItem({ file, active, removeItem }: Props) {
               </div>
             </div>
           </ContextMenuTrigger>
-          <ContextMenuContent>
-            <ContextMenuItem>Edit</ContextMenuItem>
-            <ContextMenuItem>Rename</ContextMenuItem>
+          <ContextMenuContent
+            style={{
+              WebkitBackdropFilter: "blur(5px)",
+            }}
+            className="bg-yellow-700 bg-opacity-20 border border-yellow-700 text-stone-200 backdrop-blur-xl backdrop-filter "
+          >
             <ContextMenuItem
-              className="hover:bg-red-100 text-red-800"
+              className="hover:bg-red-100 focus:bg-[rgba(225,225,225,0.2)] focus:text-red-800 text-red-800"
               onClick={() => setDeleteDetails(file)}
             >
               <AlertDialogTrigger className="w-full text-left">

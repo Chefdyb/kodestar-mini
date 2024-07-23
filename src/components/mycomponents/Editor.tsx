@@ -17,19 +17,12 @@ import { useSource } from "@/context/NewSourceContext";
 import EditorHeader from "./EditorHeader";
 import { getFileObject } from "@/stores/file";
 
-import BottomBar from "./BottomBar";
-
 import dynamic from "next/dynamic";
 
-const TerminalComponent = dynamic(
-  () => import("./Terminal"),
-  { ssr: false }
-);
+const TerminalComponent = dynamic(() => import("./Terminal"), { ssr: false });
 
-const NewSidebar = dynamic(
-  () => import("./NewSidebar"),
-  { ssr: false }
-);
+const NewSidebar = dynamic(() => import("./NewSidebar"), { ssr: false });
+const BottomBar = dynamic(() => import("./BottomBar"), { ssr: false });
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
@@ -107,18 +100,23 @@ const Editor = () => {
   const toggleTerminal = () => {
     setShowTerminal((init) => !init);
   };
-
-
-  
+  const [reload, setReload] = useState(false);
 
   return (
-    <main className=" h-screen w-full overflow-auto">
+    <main className=" h-screen w-full flex flex-col ">
       <ResizablePanelGroup direction="horizontal" className="h-full  ">
-        <ResizablePanel className="min-w-[400px] bg-stone-900" defaultSize={25}>
+        <ResizablePanel
+          className="min-w-[400px] bg-stone-900"
+          defaultSize={25}
+          order={1}
+          id="siderbar"
+        >
           <div className="flex h-full items-start justify-center">
-
-              <NewSidebar projectId={projectId || ""} />
-
+            <NewSidebar
+              projectId={projectId || ""}
+              reload={reload}
+              setReload={setReload}
+            />
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
@@ -129,7 +127,7 @@ const Editor = () => {
             </button>
             <EditorHeader />
             <ResizablePanelGroup direction="vertical" className="h-full  ">
-              <ResizablePanel defaultSize={75}>
+              <ResizablePanel defaultSize={75} order={2} id="editor ">
                 {!!selectedFile ? (
                   <MonacoEditor
                     path={selectedFile.id}
@@ -188,7 +186,11 @@ const Editor = () => {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <BottomBar closeTerminal={toggleTerminal} />
+      <BottomBar
+        closeTerminal={toggleTerminal}
+        projectId={projectId || ""}
+        setReload={setReload}
+      />
     </main>
   );
 };
