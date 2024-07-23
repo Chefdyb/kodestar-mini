@@ -147,22 +147,27 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
 
 export default NewSidebar;
 
-const NewFileThing = ({
+export const NewFileThing = ({
   setNewFile,
-  projectId,
+  variant,
 }: {
   setNewFile: (arg1: "folder" | "file") => void;
-  projectId: string;
+  variant?: "v1";
 }) => {
   return (
     <div className=" flex justify-between items-center ">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="bg-transparent hover:bg-yellow-700 hover:bg-opacity-20">
-            <span>new</span> <PlusIcon className="" />
+            {!(variant === "v1") && <span>new</span>} <PlusIcon className="" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="bg-yellow-700 bg-opacity-40 border border-yellow-800 text-stone-200 backdrop-blur-xl">
+        <DropdownMenuContent
+          style={{
+            WebkitBackdropFilter: "blur(5px)",
+          }}
+          className="bg-yellow-700 bg-opacity-20 border border-yellow-700 text-stone-200 backdrop-blur-xl backdrop-filter "
+        >
           <DropdownMenuItem
             onClick={() => setNewFile("folder")}
             className=" focus:bg-yellow-900 focus:text-stone-300"
@@ -220,7 +225,7 @@ const ProjectHeader = ({
       </Button>
       <div className="pb-1 flex justify-between w-full">
         <span className="text-lg  ">{projectData?.name}</span>
-        <NewFileThing projectId={projectId} setNewFile={setNewFile} />
+        <NewFileThing setNewFile={setNewFile} />
       </div>
     </div>
   );

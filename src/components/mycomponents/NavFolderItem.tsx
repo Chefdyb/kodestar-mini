@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSource } from "@/context/NewSourceContext";
 import { FaFolder, FaRegFileImage } from "react-icons/fa6";
+import { NewFileThing } from "./NewSidebar";
 
 interface Props {
   file: IFile;
@@ -152,7 +153,7 @@ export default function NavFolderItem({ file, active, removeItem }: Props) {
                   onClick={() => setNewFile(true)}
                   className="ri-add-line invisible group-hover:visible"
                 ></i>
-                <NewFileTihnig setNewFile={setNewItem} />
+                <NewFileThing setNewFile={setNewItem} variant="v1" />
               </div>
             </div>
           </ContextMenuTrigger>
@@ -235,30 +236,6 @@ const DeleteModal = ({
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
-  );
-};
-
-const NewFileTihnig = ({
-  setNewFile,
-}: {
-  setNewFile: (arg1: "folder" | "file") => void;
-}) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <PlusIcon className="invisible group-hover:visible" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
-        <DropdownMenuItem onClick={() => setNewFile("folder")}>
-          create folder
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setNewFile("file")}>
-          create file
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 };
 
