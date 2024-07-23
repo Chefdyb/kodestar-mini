@@ -113,7 +113,6 @@ const RecentProjects = ({ user }: { user: User | null }) => {
   useEffect(() => {
     if (!user) return;
 
-    console.log(user.id);
 
     db.projects
       .where("userID")

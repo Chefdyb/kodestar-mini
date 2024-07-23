@@ -1,6 +1,6 @@
 "use client";
 import { nanoid } from "nanoid";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   createDirectory,
   deleteFolder,
@@ -10,7 +10,11 @@ import {
 import { saveFileObject } from "@/stores/file";
 import { IFile } from "@/types";
 import NavFiles from "./NavFiles";
-import { getIconForFolder, getIconForOpenFolder } from "vscode-icons-js";
+import {
+  getIconForFile,
+  getIconForFolder,
+  getIconForOpenFolder,
+} from "vscode-icons-js";
 import { PlusIcon } from "@radix-ui/react-icons";
 import {
   ContextMenu,
@@ -38,6 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSource } from "@/context/NewSourceContext";
 import { FaFolder, FaRegFileImage } from "react-icons/fa6";
+
 interface Props {
   file: IFile;
   active: boolean;
@@ -96,6 +101,7 @@ export default function NavFolderItem({ file, active, removeItem }: Props) {
         setFiles((prevEntries) => [newFile, ...prevEntries]);
         setNewItem(null);
         setFilename("");
+        setUnfold(true);
       });
     }
 
@@ -170,24 +176,13 @@ export default function NavFolderItem({ file, active, removeItem }: Props) {
         </ContextMenu>
       </AlertDialog>
       {newItem ? (
-        <div className="mx-4 flex items-center gap-0.5 p-2 w-full">
-          {newItem === "folder" ? (
-            <FaFolder className="text-yellow-800 mr-3" size={26} />
-          ) : (
-            <FaRegFileImage className="text-yellow-800 mr-3" size={26} />
-          )}
-          <input
-            type="text"
-            value={filename}
-            onChange={(ev) => setFilename(ev.target.value)}
-            onKeyUp={(ev) => onEnter(ev.key)}
-            className="py-[2px] bg-stone-200  bg-opacity-30 w-full text-stone-200"
-            onBlur={() => {
-              setNewItem(null);
-              setFilename("");
-            }}
-          />
-        </div>
+        <InputForNewFolderAndFile
+          setFilename={setFilename}
+          setNewItem={setNewItem}
+          newItem={newItem}
+          onEnter={onEnter}
+          filename={filename}
+        />
       ) : null}
 
       <NavFiles visible={unfold} files={files} removeFile={removeFile} />
@@ -231,7 +226,7 @@ const DeleteModal = ({
             // return;
             await deleteFolder(folderToBeDeleted.path);
 
-        if (removeFile)    removeFile(folderToBeDeleted.id);
+            if (removeFile) removeFile(folderToBeDeleted.id);
             // loadProject();
             closeOpenedFile(folderToBeDeleted.id);
           }}
@@ -242,6 +237,7 @@ const DeleteModal = ({
     </AlertDialogContent>
   );
 };
+
 const NewFileTihnig = ({
   setNewFile,
 }: {
@@ -263,5 +259,55 @@ const NewFileTihnig = ({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+};
+
+const InputForNewFolderAndFile = ({
+  filename,
+  onEnter,
+  setNewItem,
+  setFilename,
+  newItem,
+}: {
+  filename: string;
+  onEnter: (p1: string) => void;
+  setNewItem: (p1: "folder" | "file" | null) => void;
+  setFilename: (p1: string) => void;
+  newItem: "folder" | "file";
+}) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [newItem, inputRef]);
+  return (
+    <div className="flex items-center gap-0.5 p-2 ml-4">
+      {newItem === "folder" ? (
+        <img
+          className="text-yellow-800 mr-3 h-5"
+          src={"/icons/" + getIconForFolder(filename || "")}
+        />
+      ) : (
+        <img
+          className="text-yellow-800 mr-3 h-5"
+          src={"/icons/" + getIconForFile(filename || "")}
+        />
+      )}
+      <input
+        type="text"
+        ref={(inp) => {
+          inp?.focus();
+        }}
+        value={filename}
+        onChange={(ev) => setFilename(ev.target.value)}
+        onKeyUp={(ev) => onEnter(ev.key)}
+        className="py-[2px] bg-stone-200  bg-opacity-30 w-full text-stone-200 outline-yellow-800 outline outline-1 px-2"
+        onBlur={() => {
+          setNewItem(null);
+          setFilename("");
+        }}
+        defaultValue={" s"}
+      />
+    </div>
   );
 };

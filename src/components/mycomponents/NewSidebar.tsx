@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { appDataDir, BaseDirectory } from "@tauri-apps/api/path";
 import { readDirectory, writeFile } from "@/helpers/filesys";
@@ -21,8 +21,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FaFileImage, FaFolder } from "react-icons/fa6";
+import { FaFileImage, FaFolder, FaLeftLong } from "react-icons/fa6";
 import { createDir } from "@tauri-apps/api/fs";
+import db, { Project } from "@/lib/db";
+import { toast } from "sonner";
+import {
+  getIconForFile,
+  getIconForFolder,
+  getIconForOpenFolder,
+} from "vscode-icons-js";
 
 const NewSidebar = ({ projectId }: { projectId: string }) => {
   const [files, setFiles] = useState<IFile[]>([]);
@@ -30,6 +37,7 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
   const [loaded, setLoaded] = useState(false);
   const [newItem, setNewItem] = useState<"file" | "folder" | null>(null);
   const [filename, setFilename] = useState("");
+
   const loadProject = async () => {
     const appDataDirPath = await appDataDir();
     const osType = await type();
@@ -113,32 +121,23 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
   };
 
   return (
-    <div className="flex flex-col w-full h-full font-mono ">
-      <div className=" w-full font-bold text-gray-200 font-mono border border-white group">
-        <span>{projectId.toUpperCase()}</span>
-        <NewFileTihnig setNewFile={setNewItem} />
-      </div>
+    <div className="flex flex-col w-full h-full font-mono px-2">
+      {/* <div className=" w-full font-bold text-gray-200 font-mono  p-4 pb-4 hidden">
+       
+
+        <NewFileThing setNewFile={setNewItem} projectId={projectId} />
+      </div> */}
+      <ProjectHeader projectId={projectId} setNewFile={setNewItem} />
       {/* <Button onClick={() => router.push("/")}>Go </Button> */}
       <div>
         {newItem ? (
-          <div className="mx-4 flex items-center gap-0.5 p-2 w-full">
-            {newItem === "folder" ? (
-              <FaFolder className="text-yellow-800 mr-3" size={26} />
-            ) : (
-              <FaFileImage className="text-yellow-800 mr-3" size={26} />
-            )}
-            <input
-              type="text"
-              value={filename}
-              onChange={(ev) => setFilename(ev.target.value)}
-              onKeyUp={(ev) => onEnter(ev.key)}
-              className="py-[2px] bg-stone-200  bg-opacity-30 w-full text-stone-200"
-              onBlur={() => {
-                setNewItem(null);
-                setFilename("");
-              }}
-            />
-          </div>
+          <InputForNewFolderAndFile
+            setFilename={setFilename}
+            setNewItem={setNewItem}
+            newItem={newItem}
+            onEnter={onEnter}
+            filename={filename}
+          />
         ) : null}
         <NavFiles visible={true} files={files} removeFile={removeFile} />
       </div>
@@ -148,26 +147,131 @@ const NewSidebar = ({ projectId }: { projectId: string }) => {
 
 export default NewSidebar;
 
-const NewFileTihnig = ({
+const NewFileThing = ({
   setNewFile,
+  projectId,
 }: {
   setNewFile: (arg1: "folder" | "file") => void;
+  projectId: string;
 }) => {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <PlusIcon className="invisible group-hover:visible" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
-        <DropdownMenuItem onClick={() => setNewFile("folder")}>
-          create folder
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setNewFile("file")}>
-          create file
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className=" flex justify-between items-center ">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="bg-transparent hover:bg-yellow-700 hover:bg-opacity-20">
+            <span>new</span> <PlusIcon className="" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-yellow-700 bg-opacity-40 border border-yellow-800 text-stone-200 backdrop-blur-xl">
+          <DropdownMenuItem
+            onClick={() => setNewFile("folder")}
+            className=" focus:bg-yellow-900 focus:text-stone-300"
+          >
+            folder
+          </DropdownMenuItem>
+          {/* <DropdownMenuSeparator /> */}
+          <DropdownMenuItem
+            onClick={() => setNewFile("file")}
+            className=" focus:bg-yellow-900 focus:text-stone-300"
+          >
+            file
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+};
+
+const ProjectHeader = ({
+  projectId,
+  setNewFile,
+}: {
+  projectId: string;
+  setNewFile: (arg1: "folder" | "file") => void;
+}) => {
+  const [projectData, setProjectData] = useState<Project | null>(null);
+
+  useEffect(() => {
+    db.projects
+      .where("id")
+      .equals(projectId)
+      .first()
+      .then((res) => {
+        setProjectData(res || null);
+      })
+      .catch((e) => {
+        toast.error(e.message);
+      });
+  }, []);
+
+  const router = useRouter();
+
+  return (
+    <div className=" w-full font-bold text-gray-200 font-mono  flex flex-col gap-3 items-start border-b border-gray-600  mb-4">
+      <Button
+        className="p-0  gap-2 group animate-in text-gray-400"
+        variant={"link"}
+        onClick={() => {
+          router.push("/home");
+        }}
+      >
+        <FaLeftLong />
+        <span className="group-hover:visible invisible"> back to home</span>
+      </Button>
+      <div className="pb-1 flex justify-between w-full">
+        <span className="text-lg  ">{projectData?.name}</span>
+        <NewFileThing projectId={projectId} setNewFile={setNewFile} />
+      </div>
+    </div>
+  );
+};
+
+const InputForNewFolderAndFile = ({
+  filename,
+  onEnter,
+  setNewItem,
+  setFilename,
+  newItem,
+}: {
+  filename: string;
+  onEnter: (p1: string) => void;
+  setNewItem: (p1: "folder" | "file" | null) => void;
+  setFilename: (p1: string) => void;
+  newItem: "folder" | "file";
+}) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [newItem, inputRef]);
+  return (
+    <div className="flex items-center gap-0.5 p-2 w-full">
+      {newItem === "folder" ? (
+        <img
+          className="text-yellow-800 mr-3 h-5"
+          src={"/icons/" + getIconForFolder(filename || "")}
+        />
+      ) : (
+        <img
+          className="text-yellow-800 mr-3 h-5"
+          src={"/icons/" + getIconForFile(filename || "")}
+        />
+      )}
+      <input
+        type="text"
+        ref={(inp) => {
+          inp?.focus();
+        }}
+        value={filename}
+        onChange={(ev) => setFilename(ev.target.value)}
+        onKeyUp={(ev) => onEnter(ev.key)}
+        className="py-[2px] bg-stone-200  bg-opacity-30 w-full text-stone-200 outline-yellow-800 outline outline-1 px-2"
+        onBlur={() => {
+          setNewItem(null);
+          setFilename("");
+        }}
+        defaultValue={" s"}
+      />
+    </div>
   );
 };

@@ -13,13 +13,23 @@ import {
 } from "../ui/resizable";
 import { Monaco, Editor as MonacoEditor } from "@monaco-editor/react";
 import { useSearchParams } from "next/navigation";
-import NewSidebar from "./NewSidebar";
 import { useSource } from "@/context/NewSourceContext";
 import EditorHeader from "./EditorHeader";
 import { getFileObject } from "@/stores/file";
 
 import BottomBar from "./BottomBar";
-import TerminalComponent from "./Terminal";
+
+import dynamic from "next/dynamic";
+
+const TerminalComponent = dynamic(
+  () => import("./Terminal"),
+  { ssr: false }
+);
+
+const NewSidebar = dynamic(
+  () => import("./NewSidebar"),
+  { ssr: false }
+);
 
 const Editor = () => {
   const projectId = useSearchParams().get("projectId");
@@ -98,12 +108,17 @@ const Editor = () => {
     setShowTerminal((init) => !init);
   };
 
+
+  
+
   return (
     <main className=" h-screen w-full overflow-auto">
       <ResizablePanelGroup direction="horizontal" className="h-full  ">
         <ResizablePanel className="min-w-[400px] bg-stone-900" defaultSize={25}>
-          <div className="flex h-full items-start justify-center p-6 ">
-            <NewSidebar projectId={projectId || ""} />
+          <div className="flex h-full items-start justify-center">
+
+              <NewSidebar projectId={projectId || ""} />
+
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
