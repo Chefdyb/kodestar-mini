@@ -12,6 +12,7 @@
   },
   "tauri": {
     "allowlist": {
+
       "shell": {
         "all": false,
         "open": true
@@ -89,7 +90,8 @@
         "height": 600,
         "resizable": true,
         "title": "kodestar mini",
-        "width": 800
+        "width": 800,
+        "transparent": true
       }
     ]
   }

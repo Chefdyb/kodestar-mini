@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod fc;
-
+mod zip;
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -44,7 +44,6 @@ fn create_directory(file_path: &str) -> String {
     String::from("OK")
 }
 
-
 #[tauri::command]
 fn rename_file(old_path: &str, new_path: &str) -> String {
     let result = fc::rename_file(old_path, new_path);
@@ -69,7 +68,6 @@ use std::{
 };
 use tauri::async_runtime::Mutex as AsyncMutex;
 use utils::app_state::AppState;
-
 
 fn main() {
     let pty_system = native_pty_system();
@@ -120,16 +118,14 @@ fn main() {
             write_to_pty,
             resize_pty,
             async_shell,
-            greet,
             open_folder,
             get_file_content,
             write_file,
             remove_file,
             remove_folder,
-            create_directory
+            create_directory,
+            zip::zip_dir
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
-
-

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+  useState,
+} from "react";
 import { Event, listen } from "@tauri-apps/api/event";
 
 // import { Terminal } from "xterm";
@@ -110,6 +116,7 @@ const TerminalComponent = ({
         display: showTerminal ? "flex" : "none",
       }}
       order={2}
+      id="terminal"
     >
       <div
         id="terminal"

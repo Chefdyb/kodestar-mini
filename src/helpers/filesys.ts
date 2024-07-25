@@ -96,3 +96,16 @@ export const readDirectory = (folderPath: string): Promise<IFile[]> => {
       });
   });
 };
+
+
+
+export async function zipDirectory() {
+  const srcDir = "/Users/divquan/Documents/questions"; // Change this to your folder path
+  const dstFile = "/Users/divquan/Documents/questions.zip"; // Change this to your destination zip path
+  try {
+    await invoke('zip_dir', { srcDir, dstFile });
+    console.log('Zipping completed successfully.');
+  } catch (error) {
+    console.error('Error occurred while zipping:', error);
+  }
+}
