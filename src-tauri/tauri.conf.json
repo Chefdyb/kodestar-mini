@@ -14,8 +14,28 @@
     "allowlist": {
 
       "shell": {
-        "all": false,
-        "open": true
+        "all": true,
+        "execute": true,
+        "sidecar": true,
+        "open": true,
+        "scope": [
+          {
+            "name": "open",
+            "cmd": "open",
+            "sidecar": false
+          },
+          {
+            "name": "start",
+            "cmd": "cmd",
+            "args": ["/c", "start"],
+            "sidecar": false
+          },
+          {
+            "name": "xdg-open",
+            "cmd": "xdg-open",
+            "sidecar": false
+          }
+        ]
       },
         "fs": {
             "all": true,

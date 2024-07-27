@@ -1,5 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use std::process::Command;
+use tauri::command;
 mod fc;
 mod zip;
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -51,6 +53,27 @@ fn rename_file(old_path: &str, new_path: &str) -> String {
         Ok(_) => String::from("OK"),
         Err(_) => String::from("ERROR"),
     }
+}
+
+#[command]
+fn show_in_folder(path: String) {
+    #[cfg(target_os = "windows")]
+    Command::new("explorer")
+        .arg(path)
+        .spawn()
+        .expect("Failed to open folder");
+
+    #[cfg(target_os = "macos")]
+    Command::new("open")
+        .arg(path)
+        .spawn()
+        .expect("Failed to open folder");
+
+    #[cfg(target_os = "linux")]
+    Command::new("xdg-open")
+        .arg(path)
+        .spawn()
+        .expect("Failed to open folder");
 }
 
 //THE TERMINAL SHIT GOES HERE
@@ -124,7 +147,8 @@ fn main() {
             remove_file,
             remove_folder,
             create_directory,
-            zip::zip_dir
+            zip::zip_dir,
+            show_in_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -99,9 +99,9 @@ export const readDirectory = (folderPath: string): Promise<IFile[]> => {
 
 
 
-export async function zipDirectory() {
-  const srcDir = "/Users/divquan/Documents/questions"; // Change this to your folder path
-  const dstFile = "/Users/divquan/Documents/questions.zip"; // Change this to your destination zip path
+export async function zipDirectory(srcDir:string, dstFile:string) {
+  // const srcDir = "/Users/divquan/Documents/questions"; // Change this to your folder path
+  // const dstFile = "/Users/divquan/Documents/questions.zip"; // Change this to your destination zip path
   try {
     await invoke('zip_dir', { srcDir, dstFile });
     console.log('Zipping completed successfully.');

@@ -74,6 +74,10 @@ function App() {
         console.warn("error getting user", e);
       });
   }, []);
+  if (!user) {
+    console.log("could not get user");
+    return null;
+  }
 
   return (
     <div className="w-screen h-screen bg-stone-800 flex items-center justify-center flex-col">
@@ -89,7 +93,7 @@ function App() {
           <div className="flex-1">
             <ProjectActions onCreateProject={onCreateProject} />
             <CloudSync />
-            <Collaboration />
+            <Collaboration user={user} />
           </div>
         </div>
       </div>
