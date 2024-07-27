@@ -29,7 +29,7 @@ const ProjectList = ({
             <button
               onClick={() => onOpenProject(project)}
               key={index}
-              className="p-3 text-gray-400   bg-opacity-20 cursor-pointer flex  gap-3 flex-col border-b border-opacity-20 border-white hover:bg-gray-100 hover:bg-opacity-20 w-full"
+              className="p-3 text-gray-400   bg-opacity-20 cursor-pointer flex  gap-3 flex-col border-b border-opacity-20 border-white hover:bg-stone-600/40 hover:bg-opacity-20 w-full"
             >
               <div className="flex gap-3">
                 <FileIcon extenstion={"html"} size="large" />

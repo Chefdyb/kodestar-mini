@@ -10,7 +10,7 @@ import { invoke } from "@tauri-apps/api";
 import { appDataDir } from "@tauri-apps/api/path";
 import { ResizablePanel } from "@/components/ui/resizable";
 import { getUser } from "@/lib/utils";
-import { type } from "@tauri-apps/api/os";
+import { platform, type } from "@tauri-apps/api/os";
 import { Terminal } from "@xterm/xterm";
 
 const TerminalComponent = ({
@@ -47,13 +47,13 @@ const TerminalComponent = ({
     },
   });
   const init = async () => {
-    const osType = await type();
+    const osType = await platform();
 
     const appDataDirPath = await appDataDir();
     const { id } = await getUser();
     const projectPath =
       appDataDirPath +
-      (osType === "Windows_NT"
+      (osType === "win32"
         ? `databases\\user_projects\\${id}\\${projectId}\\`
         : `databases/user_projects/${id}/${projectId}/`);
 
@@ -64,6 +64,7 @@ const TerminalComponent = ({
   };
 
   const fitAddon = new FitAddon();
+
   useEffect(() => {
     if (terminalRef.current) {
       console.log("in terminal");
@@ -103,7 +104,7 @@ const TerminalComponent = ({
 
   return (
     <ResizablePanel
-      defaultSize={25}
+      defaultSize={20}
       className="bg-gray-600 bottom-0 left-0 w-full pb-3 flex "
       onResize={fitTerminal}
       style={{
@@ -117,18 +118,6 @@ const TerminalComponent = ({
         className="flex-1"
         style={{ height: "100%" }}
       ></div>
-      <div className="w-52 bg-stone-700 h-full flex flex-col">
-        {["Shell", "Shell 2", "Shell 3"].map((item, index) => {
-          return (
-            <div
-              key={index}
-              className={` w-full p-2 bg-yellow-900 bg-opacity-35 text-white hover:bg-opacity-25 cursor-pointer`}
-            >
-              {item}
-            </div>
-          );
-        })}
-      </div>
     </ResizablePanel>
   );
 };

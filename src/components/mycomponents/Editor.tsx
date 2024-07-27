@@ -96,7 +96,7 @@ const Editor = () => {
   
   
   */
-  const [showTerminal, setShowTerminal] = useState(true);
+  const [showTerminal, setShowTerminal] = useState(false);
   const toggleTerminal = () => {
     setShowTerminal((init) => !init);
   };
@@ -108,7 +108,7 @@ const Editor = () => {
         <ResizablePanel
           className="min-w-[400px] bg-stone-900"
           defaultSize={25}
-          order={1}
+          // order={1}
           id="siderbar"
         >
           <div className="flex h-full items-start justify-center">
@@ -119,15 +119,19 @@ const Editor = () => {
             />
           </div>
         </ResizablePanel>
-        <ResizableHandle withHandle />
+        <ResizableHandle />
         <ResizablePanel defaultSize={75}>
           <div className="h-screen flex flex-col relative ">
             <button className="hidden" onClick={onSave} ref={btnRef}>
               save
             </button>
             <EditorHeader />
-            <ResizablePanelGroup direction="vertical" className="h-full  ">
-              <ResizablePanel defaultSize={75} order={2} id="editor ">
+            <ResizablePanelGroup
+              direction="vertical"
+              className="h-full  "
+              id="editor "
+            >
+              <ResizablePanel defaultSize={80}>
                 {!!selectedFile ? (
                   <MonacoEditor
                     path={selectedFile.id}
@@ -177,7 +181,7 @@ const Editor = () => {
                   </div>
                 )}
               </ResizablePanel>
-              <ResizableHandle withHandle />
+              <ResizableHandle />
               <TerminalComponent
                 projectId={projectId || ""}
                 showTerminal={showTerminal}

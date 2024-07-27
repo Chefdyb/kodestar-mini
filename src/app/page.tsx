@@ -1,70 +1,31 @@
 "use client";
-import Sidebar from "@/components/mycomponents/Sidebar";
-import { Button } from "@/components/ui/button";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { zipDirectory } from "@/helpers/filesys";
 
-import { Editor } from "@monaco-editor/react";
+import { Button } from "@/components/ui/button";
+import Animation from "@/lottifiles/welcome.json";
 import { useRouter } from "next/navigation";
+import Lottie from "react-lottie-player";
 
 export default function Home() {
   const router = useRouter();
   return (
-    <main className=" h-screen w-full overflow-auto">
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="h-full rounded-lg border "
-      >
+    <main className=" h-screen w-full overflow bg-stone-800 flex flex-col items-center justify-center">
+      <div className="justify-center items-center flex flex-col relative">
+        <Lottie
+          className="max-w-xl h-full "
+          loop
+          animationData={Animation}
+          play
+        />
         <Button
+          className="bg-yellow-800 hover:bg-yellow-800/60 px-20 py-10 text-2xl font-mono bottom-10"
           onClick={() => {
-            router.push("/editor?projectId=Godeys");
+            router.push("/login");
           }}
         >
-          This is for divine to go a preconfigured project{" "}
+          {" "}
+          Get Started
         </Button>
-        <Button
-          onClick={() => {
-            router.push("/editor?projectId=Heat");
-          }}
-        >
-          This is for Obo to go a preconfigured project{" "}
-        </Button>
-        <Button
-          onClick={() => {
-            router.push("/terminal");
-          }}
-        >
-          Terminal{" "}
-        </Button>
-        <Button
-          onClick={() => {
-            router.push("/home");
-          }}
-        >
-          Go home
-        </Button>
-        <Button
-          onClick={() => {
-            router.push("/admin/create-user");
-          }}
-        >
-          admin
-        </Button>
-        <Button
-          onClick={() => {
-            zipDirectory()
-              .then((res) => console.log(res))
-              .catch((reason) => console.log(reason))
-              .finally(() => console.log("finally done"));
-          }}
-        >
-          zip{" "}
-        </Button>
-      </ResizablePanelGroup>
+      </div>
     </main>
   );
 }
