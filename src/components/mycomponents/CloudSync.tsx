@@ -1,6 +1,7 @@
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { GlassCard, GlassCardContent } from "./GlassCard";
+import { toast } from "sonner";
 
 const CloudSync = () => {
     return (
@@ -14,7 +15,12 @@ const CloudSync = () => {
                         Sync your projects with github for a seamless
                         intergration of your workflow
                     </p>
-                    <Button className="bg-yellow-800 hover:bg-yellow-800/55 flex gap-3 font-mono ">
+                    <Button
+                        className="bg-yellow-800/20 hover:bg-yellow-800/20 flex gap-3 font-mono cursor-not-allowed  "
+                        onClick={() => {
+                            toast.error("Feature not available yet");
+                        }}
+                    >
                         <GitHubLogoIcon height={24} width={24} />
                         Connect with github
                     </Button>
