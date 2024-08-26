@@ -1,32 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# KODESTAR-MINI
 
-## Getting Started
+## A Mini Code Editor for Public Computer Labs
 
-First, run the development server:
+### Introduction
+Project Isolation is a Tauri-powered code editor designed to provide students with a secure and private workspace when using shared public computers. By leveraging Tauri's cross-platform capabilities and robust security features, Project Isolation ensures that students can seamlessly work on their projects without fear of data loss or unauthorized access.
 
-```bash
-npm run tauri dev
-# or
-yarn dev
-```
+### Key Features
+- **Secure Project Storage**: Students can securely store their projects using their credentials, ensuring that their work remains private and accessible only to them.
+- **Cross-Platform Compatibility**: Project Isolation runs on Windows, macOS, and Linux, making it accessible to students using a variety of devices.
+- **Intuitive Interface**: The code editor offers a user-friendly interface, making it easy for students of all levels to navigate and use.
+- **Tauri-Powered Security**: Built on the robust Tauri framework, Project Isolation benefits from its strong security features, protecting student data from unauthorized access and malware.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Getting Started
+1. **Build or Run Dev **: Follow the instruction below then after having the application, move to step two(2).
+2. **Authentication**: Log in using your credentials to access your stored projects.
+3. **Create a New Project**: Start a new project by selecting "Create New Project" and providing a name.
+4. **Code and Save**: Write your code directly in the editor and save your changes regularly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### DEVELOPMENT
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/ioenimil/kodestar-mini.git
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. **Install Dependencies:**:
+   ```bash
+   cd kodestar-mini  
+   npm install
+3. **Run the Development Server**:
+   ```bash
+   npm run tauri dev
+### BUILD
+1. **Build the Application:**:
+   ```bash
+   npm run tauri build
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
