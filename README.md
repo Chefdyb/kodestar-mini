@@ -12,7 +12,7 @@ Project Isolation is a Tauri-powered code editor designed to provide students wi
 - **Tauri-Powered Security**: Built on the robust Tauri framework, Project Isolation benefits from its strong security features, protecting student data from unauthorized access and malware.
 
 ### Getting Started
-1. **Build or Run Dev **: Follow the instruction below then after having the application, move to step two(2).
+1. **Build or Run Dev **: Follow the Instructions below then after having the application, move to step two(2).
 2. **Authentication**: Log in using your credentials to access your stored projects.
 3. **Create a New Project**: Start a new project by selecting "Create New Project" and providing a name.
 4. **Code and Save**: Write your code directly in the editor and save your changes regularly.
